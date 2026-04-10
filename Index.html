@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meeting Room 23 Semarang</title>
+    <style>
+        /* Menghilangkan semua spasi bawaan browser */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            background-color: #C6FDC4; /* Warna hijau mint sesuai tema aplikasi */
+        }
+
+        /* Membuat Iframe memenuhi seluruh layar tanpa border */
+        iframe { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: block; 
+        }
+
+        /* Loader sederhana saat halaman sedang memuat */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #183E3A;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loading">Menyiapkan Jadwal...</div>
+
+    <iframe src="https://script.google.com/macros/s/AKfycbw8Jb1hLSPaI_aXEnZenw3XjAZ7Yt2LfI0mAPOIqrbIn4oObmCw5iMN9MCtg6rrkfpV8Q/exec"></iframe>
+
+</body>
+</html>
