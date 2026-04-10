@@ -1,343 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
-  <style>
-    :root {
-      --primary-emerald: #183E3A;
-      --bg-mint: #C6FDC4;
-      --card-white: #ffffff;
-      --accent-orange: #f59e0b;
-      --text-dark: #1e293b;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meeting Room 23 Semarang</title>
+    <style>
+        /* Menghilangkan semua spasi bawaan browser */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            background-color: #C6FDC4; /* Warna hijau mint sesuai tema aplikasi */
+        }
 
-    body { 
-      background-color: var(--bg-mint); 
-      font-family: 'Poppins', sans-serif; 
-      color: var(--text-dark); 
-      padding-bottom: 50px; 
-    }
+        /* Membuat Iframe memenuhi seluruh layar tanpa border */
+        iframe { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: block; 
+        }
 
-    .nav-top { 
-      background-color: var(--primary-emerald); 
-      color: #C6FDC4; 
-      padding: 22px; 
-      font-weight: 700; 
-      text-align: center; 
-      margin-bottom: 30px; 
-      border-radius: 0 0 30px 30px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-      font-size: 1.3rem;
-    }
-
-    .card { 
-      border: none; 
-      border-radius: 25px; 
-      background: var(--card-white); 
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
-      padding: 25px; 
-    }
-
-    .header-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .judul-sec { 
-      font-size: 0.8rem; 
-      font-weight: 700; 
-      color: var(--primary-emerald); 
-      text-transform: uppercase; 
-      letter-spacing: 1.5px; 
-      border-bottom: 3px solid var(--bg-mint);
-      display: inline-block; 
-      padding-bottom: 5px;
-      margin-bottom: 0;
-    }
-
-    .btn-refresh {
-      background: var(--bg-mint);
-      border: none;
-      color: var(--primary-emerald);
-      border-radius: 50%;
-      width: 35px;
-      height: 35px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 1.1rem;
-    }
-
-    .btn-refresh:hover { background: #b2f8af; transform: rotate(90deg); }
-    .rotating { animation: spin 1s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    .form-control, .form-select { 
-      border-radius: 12px; 
-      padding: 10px; 
-      border: 1px solid #e2e8f0; 
-      background: #f8fafc; 
-    }
-
-    .btn-save {
-      border-radius: 15px; 
-      padding: 15px; 
-      font-weight: 700; 
-      background-color: var(--primary-emerald);
-      color: white; 
-      border: none; 
-      width: 100%; 
-      transition: 0.3s; 
-      margin-top: 10px;
-    }
-
-    .btn-save:hover { background-color: #0d2422; transform: translateY(-2px); }
-
-    /* DESAIN GELEMBUNG LEBIH RAMPING */
-    .item-j { 
-      background: #ffffff; 
-      border-radius: 15px; 
-      padding: 12px 18px; 
-      margin-bottom: 10px; 
-      display: flex; 
-      align-items: center; 
-      border: 1px solid #f1f5f9; 
-      transition: 0.2s;
-    }
-
-    .item-j:hover { transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
-    .border-sekali { border-left: 6px solid var(--primary-emerald); }
-    .border-rutin { border-left: 6px solid var(--accent-orange); background: #fffbeb; }
-
-    .info { flex: 1; min-width: 0; padding-left: 10px; }
-    
-    .badge-t { 
-      font-size: 0.65rem; 
-      padding: 2px 10px; 
-      border-radius: 20px; 
-      font-weight: 600; 
-      margin-bottom: 4px; 
-      display: inline-block; 
-      text-transform: uppercase; 
-    }
-
-    .badge-sekali { background: #e0eceb; color: var(--primary-emerald); }
-    .badge-rutin { background: #fef3c7; color: #92400e; }
-
-    .room-name { font-weight: 700; font-size: 0.95rem; color: #0f172a; margin: 0; }
-    .user-desc { font-size: 0.8rem; color: #64748b; margin: 0; line-height: 1.3; }
-
-    .jam { 
-      font-weight: 700; 
-      font-size: 0.85rem; 
-      text-align: right; 
-      min-width: 80px; 
-      line-height: 1.1; 
-      color: var(--primary-emerald); 
-    }
-
-    .search-box { 
-      border-radius: 30px; 
-      border: 2px solid #f1f5f9; 
-      padding: 10px 20px; 
-      font-size: 0.85rem; 
-      width: 100%; 
-      margin-bottom: 20px; 
-      background: #f8fafc; 
-    }
-
-    .page-btn { 
-      border-radius: 30px; 
-      font-weight: 600; 
-      padding: 6px 15px; 
-      font-size: 0.8rem;
-      color: var(--primary-emerald); 
-      border: 1px solid var(--primary-emerald); 
-    }
-  </style>
+        /* Loader sederhana saat halaman sedang memuat */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #183E3A;
+            z-index: -1;
+        }
+    </style>
 </head>
-<body onload="muatData()">
+<body>
 
-<div class="nav-top">Meeting Room 23 Semarang</div>
+    <div class="loading">Menyiapkan Jadwal...</div>
 
-<div class="container-fluid px-3 px-md-5">
-  <div class="row g-4">
-    <div class="col-lg-4">
-      <div class="card">
-        <div class="judul-sec" style="margin-bottom: 20px;">Reservasi Ruangan</div>
-        <form id="formB">
-          <input type="text" id="nama" class="form-control mb-3" placeholder="Nama Pemesan *">
-          
-          <select id="ruangan" class="form-select mb-3">
-            <option value="" disabled selected>Pilih Ruangan *</option>
-            <option>Ruang Entrepreneurship</option>
-            <option>Ruang Passion</option>
-            <option>Ruang Integrity</option>
-            <option>Ruang Creativity</option>
-          </select>
-          
-          <input type="date" id="tanggal" class="form-control mb-3">
-          <div class="row g-3 mb-3">
-            <div class="col-6">
-              <label class="small text-muted mb-1 d-block">Mulai</label>
-              <input type="time" id="mulai" class="form-control">
-            </div>
-            <div class="col-6">
-              <label class="small text-muted mb-1 d-block">Selesai</label>
-              <input type="time" id="selesai" class="form-control">
-            </div>
-          </div>
-          <div class="mb-4">
-            <input type="text" id="keperluan" class="form-control" placeholder="Agenda / Keperluan *">
-            <small class="text-danger d-block mt-1" style="font-size: 0.7rem;">* Wajib diisi</small>
-          </div>
-          <button type="button" class="btn-save" id="btn" onclick="simpan()">SIMPAN JADWAL</button>
-        </form>
-      </div>
-    </div>
+    <iframe src="https://script.google.com/macros/s/AKfycbw8Jb1hLSPaI_aXEnZenw3XjAZ7Yt2LfI0mAPOIqrbIn4oObmCw5iMN9MCtg6rrkfpV8Q/exec"></iframe>
 
-    <div class="col-lg-8">
-      <div class="card">
-        <div class="header-section">
-          <div class="judul-sec">Agenda Mendatang</div>
-          <button type="button" class="btn-refresh" id="btn-refresh" onclick="refreshManual()">🔄</button>
-        </div>
-        
-        <input type="text" id="inputCari" class="search-box" placeholder="Cari nama, ruangan, atau agenda..." onkeyup="filterJadwal()">
-        
-        <div id="list">
-          <div class="text-center p-5 text-muted small">Menyelaraskan jadwal...</div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mt-4" id="paginationControl" style="display:none;">
-          <button class="btn btn-sm page-btn" id="btnPrev" onclick="prevPage()">Sebelumnya</button>
-          <span class="small fw-bold text-muted" id="pageInfo">1 / 1</span>
-          <button class="btn btn-sm page-btn" id="btnNext" onclick="nextPage()">Selanjutnya</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  let dataLokal = []; 
-  let dataFiltered = []; 
-  let currentPage = 1; 
-  const itemsPerPage = 7;
-
-  // Set tanggal minimal adalah hari ini
-  document.getElementById('tanggal').min = new Date().toISOString().split("T")[0];
-
-  function muatData() {
-    google.script.run.withSuccessHandler(data => { 
-      dataLokal = data; 
-      dataFiltered = data; 
-      renderHtml(); 
-    }).getSchedule();
-  }
-
-  function refreshManual() {
-    const btn = document.getElementById('btn-refresh');
-    btn.classList.add('rotating');
-    google.script.run.withSuccessHandler(data => { 
-      dataLokal = data; 
-      dataFiltered = data; 
-      renderHtml(); 
-      btn.classList.remove('rotating');
-    }).getSchedule();
-  }
-
-  function filterJadwal() {
-    let kw = document.getElementById('inputCari').value.toLowerCase();
-    dataFiltered = dataLokal.filter(j => 
-      j.nama.toLowerCase().includes(kw) || 
-      j.ruangan.toLowerCase().includes(kw) || 
-      j.keperluan.toLowerCase().includes(kw)
-    );
-    currentPage = 1; 
-    renderHtml();
-  }
-
-  function renderHtml() {
-    let listDiv = document.getElementById('list'); 
-    let pg = document.getElementById('paginationControl');
-    
-    if (dataFiltered.length === 0) {
-      listDiv.innerHTML = '<div class="text-center p-5 text-muted small">Tidak ada jadwal ditemukan.</div>';
-      pg.style.display = 'none'; 
-      return;
-    }
-
-    let start = (currentPage - 1) * itemsPerPage;
-    let paginated = dataFiltered.slice(start, start + itemsPerPage);
-    let html = '';
-
-    paginated.forEach(j => {
-      let isR = j.tipe === 'RUTIN';
-      let tglText = isR ? 'SETIAP ' + j.hari : j.hari + ', ' + j.tanggal.split('-').reverse().join('/');
-      
-      html += `
-        <div class="item-j ${isR ? 'border-rutin' : 'border-sekali'}">
-          <div class="info">
-            <span class="badge-t ${isR ? 'badge-rutin' : 'badge-sekali'}">${tglText}</span>
-            <p class="room-name">${j.ruangan}</p>
-            <p class="user-desc"><b>${j.nama}</b> • ${j.keperluan}</p>
-          </div>
-          <div class="jam">${j.mulai}<br><span style="font-size:10px; font-weight:400; color:#94a3b8">s/d</span><br>${j.selesai}</div>
-        </div>`;
-    });
-
-    listDiv.innerHTML = html;
-    pg.style.display = 'flex';
-    let totalPages = Math.ceil(dataFiltered.length / itemsPerPage);
-    document.getElementById('pageInfo').innerText = `${currentPage} / ${totalPages}`;
-    document.getElementById('btnPrev').disabled = (currentPage === 1);
-    document.getElementById('btnNext').disabled = (currentPage >= totalPages);
-  }
-
-  function nextPage() { currentPage++; renderHtml(); }
-  function prevPage() { currentPage--; renderHtml(); }
-
-  function simpan() {
-    const btn = document.getElementById('btn');
-    const f = { 
-      nama: document.getElementById('nama').value, 
-      ruangan: document.getElementById('ruangan').value, 
-      tanggal: document.getElementById('tanggal').value, 
-      mulai: document.getElementById('mulai').value, 
-      selesai: document.getElementById('selesai').value, 
-      keperluan: document.getElementById('keperluan').value 
-    };
-
-    if(!f.nama || !f.ruangan || !f.tanggal || !f.mulai || !f.selesai || !f.keperluan) {
-      return Swal.fire('Data Belum Lengkap', 'Mohon isi semua kolom!', 'warning');
-    }
-    
-    btn.disabled = true; 
-    btn.innerText = 'MEMERIKSA JADWAL...';
-
-    google.script.run.withSuccessHandler(res => {
-      btn.disabled = false; 
-      btn.innerText = 'SIMPAN JADWAL';
-      if(res.status === 'SUKSES') {
-        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Jadwal bapak berhasil disimpan.', timer: 2000, showConfirmButton: false });
-        document.getElementById('formB').reset(); 
-        setTimeout(() => muatData(), 1500);
-      } else if(res.status === 'BENTROK') {
-        Swal.fire({ icon: 'error', title: 'Jadwal Bentrok!', text: 'Ruangan sudah terpakai pada jam tersebut.', confirmButtonColor: '#183E3A' });
-      }
-    }).simpanBooking(f);
-  }
-</script>
 </body>
 </html>
