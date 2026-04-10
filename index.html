@@ -77,11 +77,7 @@
       font-size: 1.1rem;
     }
 
-    .btn-refresh:hover {
-      background: #b2f8af;
-      transform: rotate(90deg);
-    }
-
+    .btn-refresh:hover { background: #b2f8af; transform: rotate(90deg); }
     .rotating { animation: spin 1s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -106,16 +102,19 @@
 
     .btn-save:hover { background-color: #0d2422; transform: translateY(-2px); }
 
-    /* UKURAN GELEMBUNG DIPERKECIL */
+    /* DESAIN GELEMBUNG LEBIH RAMPING */
     .item-j { 
       background: #ffffff; 
       border-radius: 15px; 
-      padding: 10px 15px; 
-      margin-bottom: 8px; 
+      padding: 12px 18px; 
+      margin-bottom: 10px; 
       display: flex; 
       align-items: center; 
       border: 1px solid #f1f5f9; 
+      transition: 0.2s;
     }
+
+    .item-j:hover { transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
     .border-sekali { border-left: 6px solid var(--primary-emerald); }
     .border-rutin { border-left: 6px solid var(--accent-orange); background: #fffbeb; }
@@ -236,6 +235,7 @@
   let currentPage = 1; 
   const itemsPerPage = 7;
 
+  // Set tanggal minimal adalah hari ini
   document.getElementById('tanggal').min = new Date().toISOString().split("T")[0];
 
   function muatData() {
@@ -271,17 +271,21 @@
   function renderHtml() {
     let listDiv = document.getElementById('list'); 
     let pg = document.getElementById('paginationControl');
+    
     if (dataFiltered.length === 0) {
       listDiv.innerHTML = '<div class="text-center p-5 text-muted small">Tidak ada jadwal ditemukan.</div>';
       pg.style.display = 'none'; 
       return;
     }
+
     let start = (currentPage - 1) * itemsPerPage;
     let paginated = dataFiltered.slice(start, start + itemsPerPage);
     let html = '';
+
     paginated.forEach(j => {
       let isR = j.tipe === 'RUTIN';
       let tglText = isR ? 'SETIAP ' + j.hari : j.hari + ', ' + j.tanggal.split('-').reverse().join('/');
+      
       html += `
         <div class="item-j ${isR ? 'border-rutin' : 'border-sekali'}">
           <div class="info">
@@ -289,9 +293,10 @@
             <p class="room-name">${j.ruangan}</p>
             <p class="user-desc"><b>${j.nama}</b> • ${j.keperluan}</p>
           </div>
-          <div class="jam ${isR ? 'jam-rutin' : ''}">${j.mulai}<br><span style="font-size:10px; font-weight:400; color:#94a3b8">s/d</span><br>${j.selesai}</div>
+          <div class="jam">${j.mulai}<br><span style="font-size:10px; font-weight:400; color:#94a3b8">s/d</span><br>${j.selesai}</div>
         </div>`;
     });
+
     listDiv.innerHTML = html;
     pg.style.display = 'flex';
     let totalPages = Math.ceil(dataFiltered.length / itemsPerPage);
@@ -325,11 +330,11 @@
       btn.disabled = false; 
       btn.innerText = 'SIMPAN JADWAL';
       if(res.status === 'SUKSES') {
-        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Jadwal disimpan.', timer: 2000, showConfirmButton: false });
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Jadwal bapak berhasil disimpan.', timer: 2000, showConfirmButton: false });
         document.getElementById('formB').reset(); 
         setTimeout(() => muatData(), 1500);
       } else if(res.status === 'BENTROK') {
-        Swal.fire({ icon: 'error', title: 'Jadwal Bentrok!', text: 'Ruangan sudah terpakai.', confirmButtonColor: '#183E3A' });
+        Swal.fire({ icon: 'error', title: 'Jadwal Bentrok!', text: 'Ruangan sudah terpakai pada jam tersebut.', confirmButtonColor: '#183E3A' });
       }
     }).simpanBooking(f);
   }
