@@ -1,7 +1,7 @@
 {
-  "name": "Voucher Console 23 Semarang",
-  "short_name": "VMS 23",
-  "description": "Sistem Manajemen Penukaran Voucher Mall 23 Semarang",
+  "name": "23 Semarang Meeting Room",
+  "short_name": "Meeting Room 23",
+  "description": "Sistem Booking ruang meeting Voucher Mall 23 Semarang",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",
