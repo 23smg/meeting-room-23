@@ -1062,7 +1062,37 @@ window.google = { script: { run: (function () {
   function pilihTanggal(ds) {
     calSelected = ds;
     renderKalender();
-    if (window.innerWidth < 768) document.getElementById('cal-day-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    bukaPopupTanggal(ds);
+  }
+
+  // Popup berisi event order pada tanggal yang diklik, lengkap dengan tombol tambah
+  function bukaPopupTanggal(ds) {
+    const evs = itemPadaTanggal(semuaItemKalender(), ds);
+    const p = ds.split('-');
+    const judul = hariDariYmd(ds) + ', ' + parseInt(p[2], 10) + ' ' + BULAN[parseInt(p[1], 10) - 1] + ' ' + p[0];
+    const isi = evs.length ? evs.map(e => {
+      const warna = warnaEvent(e);
+      return `<div class="em-item" style="--c:${warna}" onclick="lihatDetailDariPopup('${esc(e.id)}')">
+        <div class="em-date">${e.seharian ? '<b style="font-size:0.72rem">Seharian</b>' : '<b style="font-size:0.95rem">' + esc(e.mulai) + '</b><small>' + esc(e.selesai) + '</small>'}</div>
+        <div class="em-body">
+          <p class="em-title">${esc(e.judul)}</p>
+          <p class="em-meta">👤 ${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}</p>
+          ${e.lokasi ? '<p class="em-meta">📍 ' + esc(e.lokasi) + '</p>' : ''}
+          <span class="em-pill">${esc(e.kategori)}</span>${(e.lampiran || []).length ? ' <span class="em-meta">📎 ' + e.lampiran.length + '</span>' : ''}
+        </div>
+      </div>`;
+    }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
+    Swal.fire({
+      title: '<span style="font-size:1.05rem; font-weight:700; color:#183E3A">' + judul + '</span>',
+      html: '<div style="text-align:left; max-height:55vh; overflow-y:auto; padding:2px">' + isi + '</div>',
+      width: 'min(560px, 95vw)', showCloseButton: true, showCancelButton: true,
+      confirmButtonText: '+ Tambah Event Order', cancelButtonText: 'Tutup', reverseButtons: true
+    }).then(r => { if (r.isConfirmed) bukaEvent(ds); });
+  }
+
+  function lihatDetailDariPopup(id) {
+    Swal.close();
+    setTimeout(() => detailEvent(id), 80);
   }
 
   // Daftar event order satu bulan penuh: judul, jam, PIC, departemen, lokasi terbaca jelas (terutama di HP)
