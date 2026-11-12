@@ -217,6 +217,21 @@ window.google = { script: { run: (function () {
     .lg-item.bkx { cursor: default; border-left: 4px solid #94a3b8; }
     .lamp { color: var(--primary-emerald); font-weight: 600; text-decoration: none; }
     .lamp:hover { text-decoration: underline; }
+    .em-item { display: flex; gap: 12px; align-items: stretch; background: #fff; border: 1px solid #e2e8f0; border-left: 6px solid var(--c); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: 0.15s; }
+    .em-item:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15,23,42,.08); }
+    .em-date { flex: none; width: 52px; text-align: center; border-radius: 10px; background: var(--c); color: #fff; padding: 6px 0; line-height: 1.1; align-self: flex-start; }
+    .em-date b { display: block; font-size: 1.3rem; }
+    .em-date small { font-size: 0.65rem; text-transform: uppercase; opacity: .92; }
+    .em-body { min-width: 0; flex: 1; }
+    .em-title { font-weight: 700; color: #0f172a; margin: 0 0 3px; font-size: 0.93rem; overflow-wrap: anywhere; }
+    .em-meta { margin: 0; color: #475569; font-size: 0.78rem; overflow-wrap: anywhere; }
+    .em-pill { display: inline-block; margin-top: 7px; font-size: 0.68rem; font-weight: 700; color: #fff; background: var(--c); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+    @media (min-width: 768px) { .cal-chip.evn { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.3; padding: 3px 6px; font-size: 0.7rem; } }
+    @media (max-width: 480px) { .em-date { width: 46px; } }
+    .swal2-popup { font-family: 'Poppins', sans-serif !important; border-radius: 22px !important; }
+    .swal2-styled.swal2-confirm { background-color: #183E3A !important; border-radius: 12px !important; }
+    .swal2-styled.swal2-cancel { border-radius: 12px !important; }
+    .swal2-styled:focus { box-shadow: 0 0 0 3px rgba(24,62,58,.25) !important; }
     .cal-more { font-size: 0.65rem; color: #64748b; font-weight: 600; padding-left: 3px; }
     .cal-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 18px; margin: 16px 0 6px; }
     .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.75rem; color: #475569; }
@@ -358,6 +373,11 @@ window.google = { script: { run: (function () {
       <div class="cal-legend" id="cal-legend"></div>
     </div>
 
+    <div class="mt-4" id="cal-month-wrap">
+      <div class="judul-sec" id="cal-month-title" style="font-size:0.75rem; margin-bottom:12px;">Event Order bulan ini</div>
+      <div id="cal-month-list"></div>
+    </div>
+
     <div class="mt-4" id="cal-day-wrap">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div class="judul-sec" id="cal-day-title" style="font-size:0.75rem;">Event Order</div>
@@ -492,7 +512,7 @@ window.google = { script: { run: (function () {
       </div>
 
       <div class="mb-3">
-        <input type="text" id="ev-lokasi" class="form-control" maxlength="120" placeholder="Lokasi / Ruangan (opsional, ketik manual)">
+        <input type="text" id="ev-lokasi" class="form-control" maxlength="120" placeholder="Lokasi / Ruangan (opsional)">
       </div>
       <div class="mb-3">
         <textarea id="ev-ket" class="form-control" maxlength="500" placeholder="Keterangan tambahan (opsional)"></textarea>
@@ -1036,12 +1056,36 @@ window.google = { script: { run: (function () {
     }
     document.getElementById('cal-grid').innerHTML = html;
     renderAgendaHari(all);
+    renderEventBulanIni(all);
   }
 
   function pilihTanggal(ds) {
     calSelected = ds;
     renderKalender();
     if (window.innerWidth < 768) document.getElementById('cal-day-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Daftar event order satu bulan penuh: judul, jam, PIC, departemen, lokasi terbaca jelas (terutama di HP)
+  function renderEventBulanIni(all) {
+    const box = document.getElementById('cal-month-list');
+    const awal = calYear + '-' + pad2(calMonth + 1) + '-01';
+    const akhir = calYear + '-' + pad2(calMonth + 1) + '-' + pad2(new Date(calYear, calMonth + 1, 0).getDate());
+    const list = all.filter(e => e.tanggal <= akhir && e.tanggalSelesai >= awal)
+      .sort((a, b) => a.tanggal.localeCompare(b.tanggal) || (a.mulai || '').localeCompare(b.mulai || ''));
+    document.getElementById('cal-month-title').innerText = 'Event Order ' + BULAN[calMonth] + ' ' + calYear + (list.length ? ' (' + list.length + ')' : '');
+    if (!list.length) { box.innerHTML = '<div class="text-center p-4 text-muted small">Belum ada event order di bulan ini.</div>'; return; }
+    box.innerHTML = list.map(e => {
+      const w = labelWaktu(e), warna = warnaEvent(e), p = e.tanggal.split('-');
+      return `<div class="em-item" style="--c:${warna}" onclick="detailItem('event','${esc(e.id)}')">
+        <div class="em-date"><b>${parseInt(p[2], 10)}</b><small>${BULAN_S[parseInt(p[1], 10) - 1]}</small></div>
+        <div class="em-body">
+          <p class="em-title">${esc(e.judul)}</p>
+          <p class="em-meta">⏰ ${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • s/d ' + esc(tglIndo(e.tanggalSelesai)) : ''}</p>
+          <p class="em-meta">👤 ${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}${e.lokasi ? ' • 📍 ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • 📎 ' + e.lampiran.length : ''}</p>
+          <span class="em-pill">${esc(e.kategori)}</span>
+        </div>
+      </div>`;
+    }).join('');
   }
 
   function renderAgendaHari(all) {
@@ -1137,7 +1181,7 @@ window.google = { script: { run: (function () {
       google.script.run.withSuccessHandler(res => {
         reset();
         if (res.status === 'SUKSES') {
-          Swal.fire({ icon: 'success', title: 'Event Order Tersimpan!', text: res.kalender ? 'Event sudah masuk ke Google Kalender.' : 'Tersimpan, namun gagal menambahkan ke Google Kalender.', timer: 2500, showConfirmButton: false });
+          Swal.fire(res.lampiranGagal ? { icon: 'warning', title: 'Event tersimpan, lampiran gagal', text: res.lampiranGagal } : { icon: 'success', title: 'Event Order Tersimpan!', text: res.kalender ? 'Event sudah masuk ke Google Kalender.' : 'Tersimpan, namun gagal menambahkan ke Google Kalender.', timer: 2500, showConfirmButton: false });
           document.getElementById('formEvent').reset();
           toggleSeharian();
           tutupModal('event');
