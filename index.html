@@ -369,10 +369,6 @@ window.google = { script: { run: (function () {
     <div class="cal-grid" id="cal-dow"></div>
     <div class="cal-grid" id="cal-grid"></div>
 
-    <div class="cal-tools">
-      <div class="cal-legend" id="cal-legend"></div>
-    </div>
-
     <div class="mt-4" id="cal-month-wrap">
       <div class="judul-sec" id="cal-month-title" style="font-size:0.75rem; margin-bottom:12px;">Event Order bulan ini</div>
       <div id="cal-month-list"></div>
@@ -469,11 +465,6 @@ window.google = { script: { run: (function () {
       <div class="mb-3">
         <input type="text" id="ev-judul" class="form-control" maxlength="120" placeholder="Nama / Judul Event *">
       </div>
-      <select id="ev-kategori" class="form-select mb-3">
-        <option>Eksternal</option>
-        <option>Training / Workshop</option>
-        <option>Lainnya</option>
-      </select>
 
       <div class="row g-3 mb-3">
         <div class="col-6">
@@ -960,7 +951,7 @@ window.google = { script: { run: (function () {
   let calSelected = ymd(_now);
   const katTersembunyi = new Set();
 
-  function warnaEvent(e) { return e.kind === 'booking' ? roomColor(e.lokasi) : (KAT_WARNA[e.kategori] || KAT_WARNA['Lainnya']); }
+  function warnaEvent(e) { return e.kind === 'booking' ? roomColor(e.lokasi) : KAT_WARNA['Lainnya']; }
 
   function muatEvents() {
     google.script.run.withSuccessHandler(data => {
@@ -1027,11 +1018,7 @@ window.google = { script: { run: (function () {
     return `<div class="cal-chip evn" style="background:${w}" title="Event: ${esc(e.judul)}">${esc(teks)}</div>`;
   }
 
-  function renderLegend() {
-    const kats = Object.keys(KAT_WARNA).map(k =>
-      `<span class="lg-item ev ${katTersembunyi.has(k) ? 'off' : ''}" style="--c:${KAT_WARNA[k]}" onclick="toggleKat('${esc(k)}')" title="Klik untuk tampil/sembunyikan"><i></i>${esc(k)}</span>`).join('');
-    document.getElementById('cal-legend').innerHTML = kats;
-  }
+  function renderLegend() {}
 
   function renderKalender() {
     document.getElementById('cal-title').innerText = BULAN[calMonth] + ' ' + calYear;
@@ -1078,7 +1065,7 @@ window.google = { script: { run: (function () {
           <p class="em-title">${esc(e.judul)}</p>
           <p class="em-meta">👤 ${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}</p>
           ${e.lokasi ? '<p class="em-meta">📍 ' + esc(e.lokasi) + '</p>' : ''}
-          <span class="em-pill">${esc(e.kategori)}</span>${(e.lampiran || []).length ? ' <span class="em-meta">📎 ' + e.lampiran.length + '</span>' : ''}
+          ${(e.lampiran || []).length ? '<span class="em-meta">📎 ' + e.lampiran.length + '</span>' : ''}
         </div>
       </div>`;
     }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
@@ -1112,7 +1099,6 @@ window.google = { script: { run: (function () {
           <p class="em-title">${esc(e.judul)}</p>
           <p class="em-meta">⏰ ${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • s/d ' + esc(tglIndo(e.tanggalSelesai)) : ''}</p>
           <p class="em-meta">👤 ${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}${e.lokasi ? ' • 📍 ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • 📎 ' + e.lampiran.length : ''}</p>
-          <span class="em-pill">${esc(e.kategori)}</span>
         </div>
       </div>`;
     }).join('');
@@ -1137,7 +1123,7 @@ window.google = { script: { run: (function () {
       return `<div class="ev-item" style="border-left-color:${warna}; background:${warna}14" onclick="detailItem('event','${esc(e.id)}')">
         <p class="ev-title"><span class="ev-tag" style="background:${warna}; color:#fff">Event</span>${esc(e.judul)}</p>
         <p class="ev-meta">⏰ ${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • ' + esc(w.rentang) : ''}</p>
-        <p class="ev-meta">👤 <b>${esc(e.pic)}</b>${e.lokasi ? ' • 📍 ' + esc(e.lokasi) : ''} • <span style="color:${warna}; font-weight:600;">${esc(e.kategori)}</span>${(e.lampiran || []).length ? ' • 📎 ' + e.lampiran.length + ' lampiran' : ''}</p>
+        <p class="ev-meta">👤 <b>${esc(e.pic)}</b>${e.lokasi ? ' • 📍 ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • 📎 ' + e.lampiran.length + ' lampiran' : ''}</p>
       </div>`;
     }).join('');
   }
@@ -1189,7 +1175,7 @@ window.google = { script: { run: (function () {
       pic: document.getElementById('ev-pic').value.trim(),
       departemen: document.getElementById('ev-dept').value.trim(),
       judul: document.getElementById('ev-judul').value.trim(),
-      kategori: document.getElementById('ev-kategori').value,
+      kategori: 'Lainnya',
       tanggal: document.getElementById('ev-tgl').value,
       tanggalSelesai: document.getElementById('ev-tgl-selesai').value || document.getElementById('ev-tgl').value,
       seharian: document.getElementById('ev-seharian').checked,
@@ -1250,7 +1236,6 @@ window.google = { script: { run: (function () {
       title: '<span style="font-size:1.1rem; font-weight:700; color:#183E3A">Detail Event Order</span>',
       html: `<div style="text-align:left; font-size:0.85rem; background:#f8fafc; padding:18px; border-radius:18px; border:1px solid #e2e8f0; line-height:1.6;">
           <p><strong>🎯 Event:</strong><br>${esc(e.judul)}</p>
-          <p><strong>🏷️ Kategori:</strong><br><span style="color:${warnaEvent(e)}; font-weight:600;">${esc(e.kategori)}</span></p>
           <p><strong>👤 PIC:</strong><br>${esc(e.pic)}${e.departemen ? ' — ' + esc(e.departemen) : ''}</p>
           <p><strong>📅 Tanggal:</strong><br>${esc(w.rentang)}</p>
           <p><strong>⏰ Waktu:</strong><br>${esc(w.jam)}</p>
