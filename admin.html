@@ -97,11 +97,13 @@ const T={
  Departemen:{t:'Departemen',add:'Tambah departemen',c:['Nama','Aktif'],e:1,h:'Pilihan departemen di form Event Order.'},
  Data_User:{t:'Pengguna',add:'Tambah pengguna',c:['Nama','Email'],e:1,h:'Mengisi otomatis nama dan email di form reservasi.'},
  Bookings:{t:'Reservasi',c:['tanggal','jam','ruangan','nama','keperluan'],k:'row',h:'Reservasi sekali jalan. Hapus akan membatalkan juga event di Google Kalender.'},
+ Rutin:{t:'Jadwal rutin',add:'Tambah jadwal rutin',c:['Hari','Mulai','Selesai','Ruangan','Nama','Keperluan'],e:1,h:'Jadwal yang berulang setiap minggu pada hari yang sama. Otomatis memblokir ruangan di jam tersebut.'},
  Events:{t:'Event order',c:['tanggal','judul','pic','departemen','lokasi','kategori'],k:'id',h:'Hapus akan menghapus event di kalender beserta lampirannya.'}
 };
 const L={Singkat:'Nama singkat',Reservasi:'Bisa dipesan',Warna:'Warna',tanggal:'Tanggal',jam:'Jam',ruangan:'Ruangan',nama:'Pemesan',keperluan:'Keperluan',judul:'Judul',pic:'PIC',departemen:'Departemen',lokasi:'Lokasi',kategori:'Kategori'};
 const lb=c=>L[c]||c,$=s=>document.querySelector(s);
-let cur='Home',rows=[];
+let cur='Home',rows=[],ROOMNAMES=[];
+const HARI=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],tm=t=>{const p=String(t).split(':');return (+p[0]||0)*60+(+p[1]||0)};
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let TOKEN='';try{TOKEN=sessionStorage.getItem('adm')||''}catch(e){}
 const run=(fn,...a)=>new Promise((ok,no)=>google.script.run.withSuccessHandler(ok).withFailureHandler(e=>{const m=String(e.message||e);if(m.indexOf('SESI_HABIS')>-1){masuk('Sesi berakhir, silakan masuk lagi.');no('Sesi berakhir.');}else no(m);})[fn](TOKEN,...a));
@@ -136,6 +138,7 @@ async function home(){
  <div class="card up"><h2>Event order mendatang</h2>${ev.slice(0,5).map(e=>`<div class="row"><div class="d">${esc(e.tanggal.slice(5).split('-').reverse().join('/'))}</div><div>${esc(e.judul)}<small>${esc(e.departemen)}${e.lokasi?', '+esc(e.lokasi):''}</small></div><span class="pill info">${esc(e.kategori)}</span></div>`).join('')||'<div class="empty">Belum ada event order terjadwal.</div>'}</div>`;}
 async function list(){const d=T[cur];rows=await run('adminList',cur);
  if(cur==='Bookings')rows.forEach(r=>r.jam=r.mulai+' - '+r.selesai);
+ if(cur==='Rutin')rows.sort((a,b)=>HARI.indexOf(a.Hari)-HARI.indexOf(b.Hari)||tm(a.Mulai)-tm(b.Mulai));
  $('#v').innerHTML=`<h1>${d.t}</h1><p class="sub">${d.h||''}</p><div class="card"><div class="tools"><input id="q" type="search" placeholder="Cari..." oninput="isiTabel()">${d.e?`<button class="btn" onclick="bukaForm()">${d.add}</button>`:''}</div><div class="tw"><table><thead><tr>${d.c.map(c=>`<th>${lb(c)}</th>`).join('')}<th></th></tr></thead><tbody id="tb"></tbody></table></div></div>`;isiTabel();}
 function cell(c,v){
  if(c==='Warna')return `<span class="sw" style="background:${esc(v)}"></span>${esc(v)}`;
@@ -146,10 +149,14 @@ function isiTabel(){const d=T[cur],q=(($('#q')||{}).value||'').toLowerCase();
  const out=rows.map((r,i)=>[r,i]).filter(([r])=>!q||d.c.some(c=>String(r[c]).toLowerCase().includes(q)));
  $('#tb').innerHTML=out.length?out.map(([r,i])=>'<tr>'+d.c.map(c=>`<td>${cell(c,r[c])}</td>`).join('')+`<td class="a">${d.e?`<button class="btn g" onclick="bukaForm(${i})">Ubah</button> `:''}<button class="btn x" onclick="hapusItem(${i})">Hapus</button></td>`+'</tr>').join(''):`<tr><td colspan="9" class="empty">${q?'Tidak ada yang cocok dengan pencarian.':'Belum ada data. '+(d.add?'Klik "'+d.add+'" untuk mulai.':'')}</td></tr>`;}
 function input(c,v){v=v==null?'':v;
+ if(c==='Hari')return `<select id="f_${c}">${HARI.map(h=>`<option ${(v||'Senin')===h?'selected':''}>${h}</option>`).join('')}</select>`;
+ if(c==='Mulai'||c==='Selesai'){const m=String(v).match(/^(\d{1,2}):(\d{2})/);return `<input id="f_${c}" type="time" value="${m?pad(+m[1])+':'+m[2]:''}">`;}
+ if(c==='Ruangan'){const n=(!v||ROOMNAMES.includes(v))?ROOMNAMES:ROOMNAMES.concat(v);return `<select id="f_${c}">${n.map(x=>`<option ${v===x?'selected':''}>${esc(x)}</option>`).join('')}</select>`;}
  if(c==='Aktif'||c==='Reservasi')return `<select id="f_${c}">${[['YA','Ya'],['TIDAK','Tidak']].map(o=>`<option value="${o[0]}" ${(v||'YA')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`;
  if(c==='Warna')return `<input id="f_${c}" type="color" value="${esc(v||'#183E3A')}">`;
  return `<input id="f_${c}" type="${c==='Urutan'?'number':'text'}" value="${esc(v)}">`;}
 async function bukaForm(i){const d=T[cur],r=i==null?{}:rows[i];
+ if(cur==='Rutin'){try{const R=await run('adminList','Rooms');ROOMNAMES=R.filter(x=>x.Aktif!=='TIDAK').map(x=>x.Nama);}catch(e){}}
  const x=await Swal.fire({title:i==null?d.add:'Ubah data',html:'<div class="f">'+d.c.map(c=>`<label>${lb(c)}</label>${input(c,r[c])}`).join('')+'</div>',showCancelButton:true,confirmButtonText:'Simpan',cancelButtonText:'Batal',confirmButtonColor:'#183E3A',
   preConfirm:()=>{const o=Object.assign({},r);d.c.forEach(c=>o[c]=document.getElementById('f_'+c).value);return o;}});
  if(!x.isConfirmed)return;
