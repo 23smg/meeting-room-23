@@ -114,8 +114,7 @@ window.google = { script: { run: (function () {
     .tab-btn.active { background: white; color: var(--primary-emerald); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
 
     .badge-rutin-premium { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: white !important; border: none !important; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3); letter-spacing: 0.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
-    .badge-rutin-premium::before { content: '🔄'; font-size: 0.7rem; }
-
+    
     @keyframes pulse-status { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     .status-ongoing { background: #fff1f2 !important; border: 2px solid #ef4444 !important; }
     .badge-ongoing { background: #ef4444 !important; color: white !important; animation: pulse-status 1.5s infinite; }
@@ -211,8 +210,7 @@ window.google = { script: { run: (function () {
     .cal-cell.has-ev { position: relative; }
     .cal-cell.has-ev::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--ec); border-radius: 12px 12px 0 0; }
     .cal-chip.evn { border: 0; color: #fff; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
-    .cal-chip.evn::before { content: '◆ '; font-size: .6rem; }
-    .lg-item.ev { background: var(--c); border-color: var(--c); color: #fff; font-weight: 600; }
+        .lg-item.ev { background: var(--c); border-color: var(--c); color: #fff; font-weight: 600; }
     .lg-item.ev i { background: #fff; transform: rotate(45deg); border-radius: 2px; }
     .lg-item.bkx { cursor: default; border-left: 4px solid #94a3b8; }
     .lamp { color: var(--primary-emerald); font-weight: 600; text-decoration: none; }
@@ -300,16 +298,13 @@ window.google = { script: { run: (function () {
 </div>
 
 <div class="leaf-container">
-  <div class="falling-leaf">🍃</div>
-  <div class="falling-leaf">🍃</div>
-  <div class="falling-leaf">🍃</div>
 </div>
 
 <div class="nav-top">Meeting Room 23 Semarang</div>
 
 <div class="main-menu">
-  <button type="button" class="menu-btn active" id="menu-reservasi" onclick="showView('reservasi')">🏢 Reservasi Ruangan</button>
-  <button type="button" class="menu-btn" id="menu-kalender" onclick="showView('kalender')">📅 Event Order</button>
+  <button type="button" class="menu-btn active" id="menu-reservasi" onclick="showView('reservasi')">Reservasi Ruangan</button>
+  <button type="button" class="menu-btn" id="menu-kalender" onclick="showView('kalender')">Event Order</button>
 </div>
 
 <!-- ================= VIEW RESERVASI ================= -->
@@ -321,7 +316,7 @@ window.google = { script: { run: (function () {
       <div class="judul-sec">Dashboard Jadwal</div>
       <div class="header-actions">
         <button type="button" class="btn-add" onclick="bukaReservasi()">+ Reservasi</button>
-        <button type="button" class="btn-refresh" id="btn-refresh" onclick="refreshManual()" title="Refresh Data">🔄</button>
+        <button type="button" class="btn-refresh" id="btn-refresh" onclick="refreshManual()" title="Refresh Data" aria-label="Refresh Data"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
       </div>
     </div>
 
@@ -353,7 +348,7 @@ window.google = { script: { run: (function () {
       <div class="judul-sec">Event Order</div>
       <div class="header-actions">
         <button type="button" class="btn-add" onclick="bukaEvent()">+ Event Order</button>
-        <button type="button" class="btn-refresh" id="btn-refresh-ev" onclick="refreshEvents()" title="Refresh Data">🔄</button>
+        <button type="button" class="btn-refresh" id="btn-refresh-ev" onclick="refreshEvents()" title="Refresh Data" aria-label="Refresh Data"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
       </div>
     </div>
 
@@ -463,7 +458,7 @@ window.google = { script: { run: (function () {
         <select id="ev-dept" class="form-select"><option value="">Pilih departemen *</option></select>
       </div>
       <div class="mb-3">
-        <input type="text" id="ev-judul" class="form-control" maxlength="120" placeholder="Nama / Judul Event *">
+        <input type="text" id="ev-judul" class="form-control" maxlength="120" placeholder="Judul Event *">
       </div>
 
       <div class="row g-3 mb-3">
@@ -503,7 +498,7 @@ window.google = { script: { run: (function () {
       </div>
 
       <div class="mb-3">
-        <input type="text" id="ev-lokasi" class="form-control" maxlength="120" placeholder="Lokasi / Ruangan (opsional)">
+        <input type="text" id="ev-lokasi" class="form-control" maxlength="120" placeholder="Lokasi (opsional)">
       </div>
       <div class="mb-3">
         <textarea id="ev-ket" class="form-control" maxlength="500" placeholder="Keterangan tambahan (opsional)"></textarea>
@@ -813,7 +808,7 @@ window.google = { script: { run: (function () {
       const s = j.statusWaktu;
       const statusClass = s === 'ONGOING' ? 'status-ongoing' : s === 'SELESAI' ? 'status-selesai' : '';
       const badgeClass = s === 'ONGOING' ? 'badge-ongoing' : s === 'SELESAI' ? 'badge-selesai' : isR ? 'badge-rutin-premium' : '';
-      const badgeLabel = s === 'ONGOING' ? '🔴 SEDANG BERLANGSUNG' : s === 'SELESAI' ? '✓ SELESAI' : isR ? 'JADWAL RUTIN' : esc(tglDisplay);
+      const badgeLabel = s === 'ONGOING' ? 'SEDANG BERLANGSUNG' : s === 'SELESAI' ? 'SELESAI' : isR ? 'JADWAL RUTIN' : esc(tglDisplay);
       const badgeStyle = (s === 'ONGOING' || s === 'SELESAI' || isR) ? '' : `background: ${rColor}; color: white;`;
       const warna = s === 'SELESAI' ? '#64748b' : (isR && s !== 'ONGOING' ? 'var(--accent-orange)' : rColor);
 
@@ -848,10 +843,10 @@ window.google = { script: { run: (function () {
     Swal.fire({
       title: '<span style="font-size:1.1rem; font-weight:700; color:#183E3A">Detail Reservasi</span>',
       html: `<div style="text-align:left; font-size:0.85rem; background:#f8fafc; padding:18px; border-radius:18px; border:1px solid #e2e8f0; line-height:1.6;">
-          <p><strong>📍 Ruangan:</strong><br>${esc(j.ruangan)}</p>
-          <p><strong>👤 Pemesan:</strong><br>${esc(j.nama)}</p>
-          <p><strong>📝 Agenda:</strong><br>${esc(j.keperluan)}</p>
-          <p style="margin-bottom:0;"><strong>📅 Waktu:</strong><br>${esc(j.hari)}, ${esc(j.tanggal)} (${esc(j.mulai)} - ${esc(j.selesai)})</p>
+          <p><strong>Ruangan:</strong><br>${esc(j.ruangan)}</p>
+          <p><strong>Pemesan:</strong><br>${esc(j.nama)}</p>
+          <p><strong>Agenda:</strong><br>${esc(j.keperluan)}</p>
+          <p style="margin-bottom:0;"><strong>Waktu:</strong><br>${esc(j.hari)}, ${esc(j.tanggal)} (${esc(j.mulai)} - ${esc(j.selesai)})</p>
         </div>`,
       showCloseButton: true,
       showConfirmButton: false,
@@ -1063,9 +1058,9 @@ window.google = { script: { run: (function () {
         <div class="em-date">${e.seharian ? '<b style="font-size:0.72rem">Seharian</b>' : '<b style="font-size:0.95rem">' + esc(e.mulai) + '</b><small>' + esc(e.selesai) + '</small>'}</div>
         <div class="em-body">
           <p class="em-title">${esc(e.judul)}</p>
-          <p class="em-meta">👤 ${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}</p>
-          ${e.lokasi ? '<p class="em-meta">📍 ' + esc(e.lokasi) + '</p>' : ''}
-          ${(e.lampiran || []).length ? '<span class="em-meta">📎 ' + e.lampiran.length + '</span>' : ''}
+          <p class="em-meta">${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}</p>
+          ${e.lokasi ? '<p class="em-meta">' + esc(e.lokasi) + '</p>' : ''}
+          ${(e.lampiran || []).length ? '<span class="em-meta">' + e.lampiran.length + ' lampiran</span>' : ''}
         </div>
       </div>`;
     }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
@@ -1097,8 +1092,8 @@ window.google = { script: { run: (function () {
         <div class="em-date"><b>${parseInt(p[2], 10)}</b><small>${BULAN_S[parseInt(p[1], 10) - 1]}</small></div>
         <div class="em-body">
           <p class="em-title">${esc(e.judul)}</p>
-          <p class="em-meta">⏰ ${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • s/d ' + esc(tglIndo(e.tanggalSelesai)) : ''}</p>
-          <p class="em-meta">👤 ${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}${e.lokasi ? ' • 📍 ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • 📎 ' + e.lampiran.length : ''}</p>
+          <p class="em-meta">${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • s/d ' + esc(tglIndo(e.tanggalSelesai)) : ''}</p>
+          <p class="em-meta">${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}${e.lokasi ? ' • ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • ' + e.lampiran.length + ' lampiran' : ''}</p>
         </div>
       </div>`;
     }).join('');
@@ -1116,14 +1111,14 @@ window.google = { script: { run: (function () {
       if (e.kind === 'booking') {
         return `<div class="ev-item" style="border-left-color:${warna}" onclick="detailItem('booking','${e.row}')">
           <p class="ev-title"><span class="ev-tag">Reservasi</span>${esc(e.judul)}</p>
-          <p class="ev-meta">⏰ ${esc(w.jam)} • 📍 <span style="color:${warna}; font-weight:600;">${esc(e.lokasi)}</span></p>
-          <p class="ev-meta">👤 <b>${esc(e.pic)}</b></p>
+          <p class="ev-meta">${esc(w.jam)} • <span style="color:${warna}; font-weight:600;">${esc(e.lokasi)}</span></p>
+          <p class="ev-meta"><b>${esc(e.pic)}</b></p>
         </div>`;
       }
       return `<div class="ev-item" style="border-left-color:${warna}; background:${warna}14" onclick="detailItem('event','${esc(e.id)}')">
         <p class="ev-title"><span class="ev-tag" style="background:${warna}; color:#fff">Event</span>${esc(e.judul)}</p>
-        <p class="ev-meta">⏰ ${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • ' + esc(w.rentang) : ''}</p>
-        <p class="ev-meta">👤 <b>${esc(e.pic)}</b>${e.lokasi ? ' • 📍 ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • 📎 ' + e.lampiran.length + ' lampiran' : ''}</p>
+        <p class="ev-meta">${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • ' + esc(w.rentang) : ''}</p>
+        <p class="ev-meta"><b>${esc(e.pic)}</b>${e.lokasi ? ' • ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • ' + e.lampiran.length + ' lampiran' : ''}</p>
       </div>`;
     }).join('');
   }
@@ -1235,13 +1230,13 @@ window.google = { script: { run: (function () {
     Swal.fire({
       title: '<span style="font-size:1.1rem; font-weight:700; color:#183E3A">Detail Event Order</span>',
       html: `<div style="text-align:left; font-size:0.85rem; background:#f8fafc; padding:18px; border-radius:18px; border:1px solid #e2e8f0; line-height:1.6;">
-          <p><strong>🎯 Event:</strong><br>${esc(e.judul)}</p>
-          <p><strong>👤 PIC:</strong><br>${esc(e.pic)}${e.departemen ? ' — ' + esc(e.departemen) : ''}</p>
-          <p><strong>📅 Tanggal:</strong><br>${esc(w.rentang)}</p>
-          <p><strong>⏰ Waktu:</strong><br>${esc(w.jam)}</p>
-          <p><strong>📍 Lokasi:</strong><br>${esc(e.lokasi || '-')}</p>
-          ${(e.lampiran || []).length ? '<p><strong>📎 Lampiran:</strong><br>' + e.lampiran.map((l, i) => '<a href="#" class="lamp" onclick="bukaLampiran(\'' + esc(e.id) + '\',' + i + '); return false;">📄 ' + esc(l.nama) + '</a>').join('<br>') + '</p>' : ''}
-          <p style="margin-bottom:0;"><strong>📝 Keterangan:</strong><br>${esc(e.keterangan || '-').replace(/\n/g, '<br>')}</p>
+          <p><strong>Event:</strong><br>${esc(e.judul)}</p>
+          <p><strong>PIC:</strong><br>${esc(e.pic)}${e.departemen ? ' — ' + esc(e.departemen) : ''}</p>
+          <p><strong>Tanggal:</strong><br>${esc(w.rentang)}</p>
+          <p><strong>Waktu:</strong><br>${esc(w.jam)}</p>
+          <p><strong>Lokasi:</strong><br>${esc(e.lokasi || '-')}</p>
+          ${(e.lampiran || []).length ? '<p><strong>Lampiran:</strong><br>' + e.lampiran.map((l, i) => '<a href="#" class="lamp" onclick="bukaLampiran(\'' + esc(e.id) + '\',' + i + '); return false;">' + esc(l.nama) + '</a>').join('<br>') + '</p>' : ''}
+          <p style="margin-bottom:0;"><strong>Keterangan:</strong><br>${esc(e.keterangan || '-').replace(/\n/g, '<br>')}</p>
         </div>`,
       showCloseButton: true,
       showConfirmButton: false,
