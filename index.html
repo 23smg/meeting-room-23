@@ -31,7 +31,7 @@ window.google = { script: { run: (function () {
 </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -339,7 +339,104 @@ window.google = { script: { run: (function () {
       .tab-btn { min-width: 0; font-size: 0.68rem; padding: 9px 2px; }
     }
     @media (prefers-reduced-motion: reduce) { .falling-leaf { animation: none; } }
-  </style>
+  
+    /* --- Kalender gaya Google Calendar --- */
+    #cal-grid.cal-grid { gap: 0; border-top: 1px solid #dadce0; border-left: 1px solid #dadce0; border-radius: 0; }
+    #cal-dow.cal-grid { border: 0; }
+    .cal-dow { font-size: .68rem; font-weight: 600; letter-spacing: .06em; color: #70757a; padding: 8px 0; }
+    #cal-grid .cal-cell { min-height: 118px; background: #fff; border: 0; border-right: 1px solid #dadce0; border-bottom: 1px solid #dadce0; border-radius: 0; padding: 4px 4px 6px; box-shadow: none; }
+    #cal-grid .cal-cell:hover { background: #f8f9fa; }
+    #cal-grid .cal-cell.empty { background: #fff; cursor: default; }
+    #cal-grid .cal-cell.empty:hover { background: #fff; }
+    #cal-grid .cal-cell.has-ev::before { display: none; }
+    #cal-grid .cal-cell.selected { background: #e6f4ea; box-shadow: none; }
+    #cal-grid .cal-cell.today { border: 0; border-right: 1px solid #dadce0; border-bottom: 1px solid #dadce0; }
+    #cal-grid .cal-cell.weekend .cal-num { color: inherit; }
+    #cal-grid .cal-cell.libur .cal-num { color: #d93025; }
+    .cal-num { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; border-radius: 13px; font-size: .78rem; font-weight: 500; color: #3c4043; margin: 1px 0 3px; padding: 0 4px; }
+    #cal-grid .cal-cell.today .cal-num { background: var(--primary-emerald); color: #fff; font-weight: 700; }
+    .cal-cell.libur .cal-num::after, .cal-cell.cuti .cal-num::after { display: none; }
+    .cal-libur { top: 7px; right: 6px; max-width: calc(100% - 46px); font-size: .62rem; font-weight: 500; color: #d93025; opacity: 1; }
+    .cal-cell.cuti .cal-libur { color: #e37400; }
+    .cal-chips { gap: 1px; }
+    .cal-chip.gc { background: transparent !important; border: 0 !important; box-shadow: none; color: #3c4043 !important; font-size: .72rem; font-weight: 500; padding: 2px 4px 2px 15px; border-radius: 4px; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+    .cal-chip.gc::before { content: ''; position: absolute; left: 4px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--c); }
+    .cal-chip.gc:hover { background: #f1f3f4 !important; }
+    .cal-chip.gcbar { color: #fff; font-size: .72rem; font-weight: 500; border-radius: 4px; padding: 2px 6px; box-shadow: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 1.4; }
+    .cal-more { font-size: .7rem; font-weight: 600; color: #3c4043; padding: 2px 4px; border-radius: 4px; }
+    @media (min-width: 768px) { .cal-chip.gcbar { white-space: nowrap; display: block; -webkit-line-clamp: unset; font-size: .72rem; padding: 2px 6px; } }
+    @media (max-width: 576px) {
+      #cal-grid .cal-cell { min-height: 56px; padding: 3px 2px; }
+      .cal-num { min-width: 22px; height: 22px; font-size: .72rem; }
+      .cal-chips { flex-direction: row; flex-wrap: wrap; gap: 3px; padding-left: 3px; }
+      .cal-chip.gc, .cal-chip.gcbar { font-size: 0 !important; width: 7px; height: 7px; padding: 0; border-radius: 50%; background: var(--c) !important; }
+      .cal-chip.gc::before { display: none; }
+      .cal-chip.gcbar { border-radius: 2px; width: 10px; height: 7px; }
+    }
+
+    /* --- Kalender gaya Google Calendar (tampilan Month) --- */
+    #cal-grid.c5, #cal-dow.c5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    #cal-grid.c7, #cal-dow.c7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    #cal-grid.cal-grid { border: 0; }
+    .cal-dow { font-size: .72rem; font-weight: 500; letter-spacing: .04em; color: #3c4043; padding: 10px 0 0; }
+    #cal-grid .cal-cell { min-height: 132px; padding: 6px 6px 8px; border-top: 1px solid #dadce0; border-right: 1px solid #dadce0; border-bottom: 0; border-left: 0; }
+    #cal-grid.c5 .cal-cell:nth-child(5n), #cal-grid.c7 .cal-cell:nth-child(7n) { border-right: 0; }
+    #cal-grid .cal-cell.today { border-top: 1px solid #dadce0; border-right: 1px solid #dadce0; border-bottom: 0; }
+    #cal-grid.c5 .cal-cell.today:nth-child(5n), #cal-grid.c7 .cal-cell.today:nth-child(7n) { border-right: 0; }
+    .cal-num { display: flex; margin: 0 auto 4px; width: 28px; min-width: 28px; height: 28px; padding: 0; border-radius: 50%; font-size: .85rem; font-weight: 500; color: #202124; }
+    .cal-libur { left: 6px; right: auto; top: 9px; max-width: calc(50% - 24px); font-size: .6rem; text-align: left; }
+    .cal-chips { gap: 2px; }
+    .cal-chip.gc { font-size: .85rem; font-weight: 500; color: #202124 !important; padding: 3px 4px 3px 22px; line-height: 1.35; }
+    .cal-chip.gc::before { left: 6px; width: 10px; height: 10px; margin-top: -5px; box-sizing: border-box; background: transparent; border: 2px solid var(--c); }
+    .cal-chip.gcbar { font-size: .85rem; padding: 3px 8px; }
+    .cal-more { font-size: .8rem; padding: 3px 6px; }
+    .libur-leg { align-items: center; }
+    .wk-toggle { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; }
+    .wk-toggle input { accent-color: var(--primary-emerald); width: 14px; height: 14px; }
+    @media (max-width: 576px) {
+      #cal-grid .cal-cell { min-height: 60px; padding: 4px 2px; }
+      .cal-num { width: 24px; min-width: 24px; height: 24px; font-size: .75rem; }
+      .cal-libur { display: none; }
+      .cal-chip.gc, .cal-chip.gcbar { font-size: 0 !important; width: 7px; height: 7px; padding: 0; border-radius: 50%; background: var(--c) !important; border: 0; }
+      .cal-chip.gc::before { display: none; }
+      .cal-chip.gcbar { border-radius: 2px; width: 10px; }
+    }
+
+    /* --- Kalender persis Google Calendar --- */
+    .cal-head, #cal-dow, #cal-grid { font-family: 'Google Sans', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .cal-head { justify-content: flex-start; gap: 8px; margin-bottom: 10px; }
+    .cal-today-btn { border: 1px solid #dadce0; background: #fff; color: #3c4043; border-radius: 20px; height: 36px; padding: 0 18px; font-size: .875rem; font-weight: 500; }
+    .cal-today-btn:hover { background: #f1f3f4; }
+    .cal-nav-btn { background: transparent; color: #5f6368; border-radius: 50%; width: 36px; height: 36px; font-size: 1.6rem; line-height: 1; padding: 0 0 3px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; }
+    .cal-nav-btn:hover { background: #f1f3f4; }
+    .cal-title { font-size: 1.4rem; font-weight: 400; color: #3c4043; min-width: 0; text-align: left; margin-left: 8px; }
+    .cal-dow { font-size: .69rem; font-weight: 500; letter-spacing: .08em; color: #70757a; text-transform: uppercase; padding: 8px 0 0; }
+    #cal-grid .cal-cell { padding: 4px 4px 6px; }
+    .cal-num { width: fit-content; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 13px; font-size: .75rem; font-weight: 500; color: #3c4043; margin: 0 auto 2px; }
+    #cal-grid .cal-cell.other .cal-num { color: #70757a; }
+    #cal-grid .cal-cell.today .cal-num { background: #1a73e8; color: #fff; font-weight: 500; }
+    #cal-grid .cal-cell.libur .cal-num { color: #d93025; }
+    #cal-grid .cal-cell.cuti .cal-num { color: #e37400; }
+    #cal-grid .cal-cell.today.libur .cal-num, #cal-grid .cal-cell.today.cuti .cal-num { color: #fff; }
+    .cal-libur { top: 8px; font-size: .58rem; }
+    .cal-chips { gap: 1px; }
+    .cal-chip.gc { font-size: .75rem; height: 22px; line-height: 22px; padding: 0 4px 0 19px; font-weight: 500; color: #3c4043 !important; }
+    .cal-chip.gc::before { left: 5px; width: 9px; height: 9px; margin-top: -4.5px; border-width: 2px; }
+    .cal-chip.gcbar { font-size: .75rem; height: 22px; line-height: 22px; padding: 0 8px; font-weight: 500; margin: 1px 0; }
+    .cal-more { font-size: .75rem; font-weight: 500; line-height: 22px; padding: 0 8px; color: #3c4043; cursor: pointer; }
+    .cal-more:hover { background: #f1f3f4; }
+    @media (max-width: 576px) {
+      .cal-title { font-size: 1.1rem; }
+      .cal-today-btn { padding: 0 12px; height: 32px; }
+      .cal-nav-btn { width: 32px; height: 32px; }
+      #cal-grid .cal-cell { min-height: 60px; padding: 3px 1px; }
+      .cal-num { min-width: 22px; height: 22px; padding: 0 3px; font-size: .7rem; }
+      .cal-chip.gc, .cal-chip.gcbar { font-size: 0 !important; width: 7px; height: 7px; padding: 0; margin: 0; line-height: 7px; border-radius: 50%; background: var(--c) !important; border: 0; }
+      .cal-chip.gc::before { display: none; }
+      .cal-chip.gcbar { border-radius: 2px; width: 10px; }
+      .cal-more { display: none; }
+    }
+</style>
 </head>
 <body onload="muatDataInit()">
 
@@ -414,17 +511,17 @@ window.google = { script: { run: (function () {
     </div>
 
     <div class="cal-head">
-      <div class="d-flex gap-2">
-        <button type="button" class="cal-nav-btn" onclick="gantiBulan(-1)">‹</button>
-        <button type="button" class="cal-nav-btn" onclick="gantiBulan(1)">›</button>
+      <button type="button" class="cal-today-btn" onclick="keHariIni()">Hari ini</button>
+      <div class="d-flex">
+        <button type="button" class="cal-nav-btn" onclick="gantiBulan(-1)" aria-label="Bulan sebelumnya">&#8249;</button>
+        <button type="button" class="cal-nav-btn" onclick="gantiBulan(1)" aria-label="Bulan berikutnya">&#8250;</button>
       </div>
       <div class="cal-title" id="cal-title"></div>
-      <button type="button" class="cal-today-btn" onclick="keHariIni()">Hari ini</button>
     </div>
 
     <div class="cal-grid" id="cal-dow"></div>
     <div class="cal-grid" id="cal-grid"></div>
-    <div class="libur-leg"><span><i style="background:#dc2626"></i>Libur nasional</span><span><i style="background:#f59e0b"></i>Cuti bersama</span></div>
+    <div class="libur-leg"><span><i style="background:#dc2626"></i>Libur nasional</span><span><i style="background:#f59e0b"></i>Cuti bersama</span><label class="wk-toggle"><input type="checkbox" id="cal-wk" onchange="toggleAkhirPekan(this.checked)"> Tampilkan Sabtu &amp; Minggu</label></div>
 
     <div class="mt-4" id="cal-month-wrap">
       <div class="judul-sec" id="cal-month-title" style="font-size:0.75rem; margin-bottom:12px;">Event Order bulan ini</div>
@@ -1002,6 +1099,8 @@ window.google = { script: { run: (function () {
   let calYear = _now.getFullYear();
   let calMonth = _now.getMonth();
   let calSelected = ymd(_now);
+  let calWeekend = null; // null = otomatis
+  function toggleAkhirPekan(v) { calWeekend = !!v; renderKalender(); }
   const katTersembunyi = new Set();
 
   function warnaEvent(e) { return e.kind === 'booking' ? roomColor(e.lokasi) : KAT_WARNA['Lainnya']; }
@@ -1067,8 +1166,10 @@ window.google = { script: { run: (function () {
   function chipHtml(e) {
     const w = warnaEvent(e);
     const teks = (e.seharian ? '' : e.mulai + ' ') + (e.kind === 'booking' ? (roomOf(e.lokasi) ? roomOf(e.lokasi).short + ': ' : '') : '') + e.judul;
-    if (e.kind === 'booking') return `<div class="cal-chip bk" style="--c:${w}" title="${esc(e.lokasi)} - ${esc(e.judul)}">${esc(teks)}</div>`;
-    return `<div class="cal-chip evn" style="background:${w}" title="Event: ${esc(e.judul)}">${esc(teks)}</div>`;
+    if (e.kind === 'booking') return `<div class="cal-chip bk gc" style="--c:${w}" title="${esc(e.lokasi)} - ${esc(e.judul)}">${esc(teks)}</div>`;
+    const blok = e.seharian || e.tanggal !== e.tanggalSelesai;
+    if (blok) return `<div class="cal-chip evn gcbar" style="background:${w}; --c:${w}" title="Event: ${esc(e.judul)}">${esc(e.judul)}</div>`;
+    return `<div class="cal-chip evn gc" style="--c:${w}" title="Event: ${esc(e.judul)}">${esc(teks)}</div>`;
   }
 
   function renderLegend() {}
@@ -1094,25 +1195,41 @@ window.google = { script: { run: (function () {
 
   function renderKalender() {
     document.getElementById('cal-title').innerText = BULAN[calMonth] + ' ' + calYear;
-    document.getElementById('cal-dow').innerHTML = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'].map(h => `<div class="cal-dow">${h}</div>`).join('');
     renderLegend();
 
     const all = semuaItemKalender();
     const offset = (new Date(calYear, calMonth, 1).getDay() + 6) % 7; // minggu mulai Senin
     const jmlHari = new Date(calYear, calMonth + 1, 0).getDate();
+    // Akhir pekan: otomatis tampil bila ada jadwal di Sabtu/Minggu bulan ini, atau sesuai pilihan pengguna
+    let tampil = calWeekend;
+    if (tampil === null) {
+      tampil = false;
+      for (let d = 1; d <= jmlHari && !tampil; d++) {
+        if ((offset + d - 1) % 7 >= 5 && itemPadaTanggal(all, calYear + '-' + pad2(calMonth + 1) + '-' + pad2(d)).length) tampil = true;
+      }
+    }
+    const kolom = tampil ? 7 : 5;
+    ['cal-dow', 'cal-grid'].forEach(id => { const el = document.getElementById(id); el.classList.toggle('c5', !tampil); el.classList.toggle('c7', tampil); });
+    document.getElementById('cal-dow').innerHTML = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'].slice(0, kolom).map(h => `<div class="cal-dow">${h}</div>`).join('');
+    const cb = document.getElementById('cal-wk'); if (cb) cb.checked = tampil;
     const hariIni = ymd(new Date());
     let html = '';
-    for (let i = 0; i < offset; i++) html += '<div class="cal-cell empty"></div>';
-    for (let d = 1; d <= jmlHari; d++) {
-      const ds = calYear + '-' + pad2(calMonth + 1) + '-' + pad2(d);
+    const minggu = Math.ceil((offset + jmlHari) / 7);
+    for (let i = 0; i < minggu * 7; i++) {
+      const dow = i % 7;
+      if (!tampil && dow >= 5) continue;
+      const dt = new Date(calYear, calMonth, 1 - offset + i);
+      const ds = ymd(dt);
+      const luar = dt.getMonth() !== calMonth;
+      const d = dt.getDate();
+      const numLabel = d === 1 ? d + ' ' + BULAN_S[dt.getMonth()] : d;
       const evs = itemPadaTanggal(all, ds);
       const ev1 = evs.find(x => x.kind === 'event');
-      const dow = (offset + d - 1) % 7;
       const lb = infoLibur(ds);
-      const cls = ['cal-cell', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', dow >= 5 ? 'weekend' : '', lb ? (lb.cuti ? 'cuti' : 'libur') : '', ev1 ? 'has-ev' : ''].join(' ');
+      const cls = ['cal-cell', luar ? 'other' : '', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', lb ? (lb.cuti ? 'cuti' : 'libur') : '', ev1 ? 'has-ev' : ''].join(' ');
       const chips = evs.slice().sort((a, b) => (a.kind === 'event' ? 0 : 1) - (b.kind === 'event' ? 0 : 1)).slice(0, 3).map(chipHtml).join('');
-      const extra = evs.length > 3 ? `<div class="cal-more">+${evs.length - 3} lagi</div>` : '';
-      html += `<div class="${cls}"${lb ? ' title="' + esc(lb.nama) + '"' : ''} style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${d}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
+      const extra = evs.length > 3 ? `<div class="cal-more">${evs.length - 3} lainnya</div>` : '';
+      html += `<div class="${cls}"${lb ? ' title="' + esc(lb.nama) + '"' : ''} style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${numLabel}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
     }
     document.getElementById('cal-grid').innerHTML = html;
     renderAgendaHari(all);
