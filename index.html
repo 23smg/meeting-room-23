@@ -247,6 +247,66 @@ window.google = { script: { run: (function () {
     .ev-item .ev-meta { font-size: 0.8rem; color: #64748b; margin: 2px 0 0; }
     .ev-tag { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.4px; border-radius: 10px; padding: 1px 8px; background: #f1f5f9; color: #475569; margin-right: 6px; vertical-align: middle; text-transform: uppercase; }
 
+    /* --- Kartu event order (agenda) --- */
+    .ag-item { display: grid; grid-template-columns: 104px minmax(0, 1fr); background: #fff; border: 1px solid #dfe6ee; border-radius: 14px; overflow: hidden; margin-bottom: 10px; cursor: pointer; box-shadow: 0 2px 8px rgba(15,23,42,.06); transition: .15s; }
+    .ag-item:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(15,23,42,.12); }
+    .ag-time { background: var(--c); color: #fff; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; line-height: 1.15; }
+    .ag-time .d { font-size: 1.6rem; font-weight: 700; }
+    .ag-time .m { font-size: .66rem; font-weight: 600; letter-spacing: .1em; opacity: .95; }
+    .ag-time .j { font-size: .95rem; font-weight: 700; }
+    .ag-time .j2 { font-size: .75rem; font-weight: 500; opacity: .9; margin-top: 2px; }
+    .ag-time .jm { font-size: .72rem; font-weight: 600; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.35); width: 100%; }
+    .ag-body { padding: 12px 16px; align-self: center; min-width: 0; }
+    .ag-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin: 0 0 3px; overflow-wrap: anywhere; }
+    .ag-sub { font-size: .8rem; color: #64748b; margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
+    .ag-sub b { color: #334155; font-weight: 600; }
+    .ag-sub .sep { display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; vertical-align: middle; margin: 0 8px; }
+    .ag-av { display: none; }
+    .ag-tag { display: inline-block; font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--c); margin-bottom: 2px; }
+    @media (max-width: 480px) { .ag-item { grid-template-columns: 82px minmax(0, 1fr); } .ag-body { padding: 10px 12px; } }
+
+
+    /* Varian D: kartu avatar, waktu di kanan */
+    .ag-item { grid-template-columns: 46px minmax(0,1fr) auto; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; border: 1px solid #dfe6ee; }
+    .ag-av { display: flex; width: 46px; height: 46px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 700; font-size: .95rem; align-items: center; justify-content: center; letter-spacing: .02em; box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--c); }
+    .ag-body { order: 2; padding: 0; }
+    .ag-time { order: 3; background: none; color: #183E3A; align-items: flex-end; text-align: right; padding: 0 0 0 14px; border-left: 1px solid #e2e8f0; min-width: 88px; }
+    .ag-time .d { color: var(--c); font-size: 1.5rem; }
+    .ag-time .m { color: #64748b; opacity: 1; }
+    .ag-time .j { color: #183E3A; font-size: 1.05rem; }
+    .ag-time .j2 { color: #94a3b8; opacity: 1; }
+    .ag-time .jm { color: #183E3A; border-top: 0; padding-top: 0; margin-top: 4px; font-size: .72rem; text-align: right; }
+    @media (max-width: 480px) { .ag-item { grid-template-columns: 38px minmax(0,1fr) auto; gap: 10px; padding: 12px; } .ag-av { width: 38px; height: 38px; font-size: .8rem; } .ag-time { min-width: 70px; padding-left: 10px; } }
+
+    /* --- Popup detail --- */
+    .dp-wrap { padding: 0 0 16px !important; overflow: hidden; }
+    .dp-wrap .swal2-html-container { margin: 0 !important; padding: 0 !important; }
+    .dp-wrap .swal2-close { color: #fff !important; z-index: 5; }
+    .dp { text-align: left; }
+    .dp-head { background: var(--c); color: #fff; padding: 22px 52px 18px 24px; }
+    .dp-tag { display: inline-block; font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,255,255,.2); border-radius: 6px; padding: 2px 9px; margin-bottom: 10px; }
+    .dp-head h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 6px; line-height: 1.3; overflow-wrap: anywhere; }
+    .dp-time { font-size: .85rem; font-weight: 500; opacity: .95; }
+    .dp-rows { margin: 0; padding: 6px 24px 0; }
+    .dp-rows > div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; padding: 11px 0; border-bottom: 1px solid #eef2f6; font-size: .88rem; }
+    .dp-rows > div:last-child { border-bottom: 0; }
+    .dp-rows dt { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #64748b; padding-top: 3px; margin: 0; }
+    .dp-rows dd { margin: 0; color: #1e293b; font-weight: 500; overflow-wrap: anywhere; }
+
+    /* --- Tanggal merah --- */
+    .cal-cell { position: relative; }
+    .cal-cell.libur .cal-num { color: #dc2626; }
+    .cal-cell.cuti .cal-num { color: #b45309; }
+    .cal-cell.libur .cal-num::after, .cal-cell.cuti .cal-num::after { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-left: 5px; vertical-align: 2px; background: #dc2626; }
+    .cal-cell.cuti .cal-num::after { background: #f59e0b; }
+    .cal-libur { position: absolute; top: 6px; right: 7px; max-width: calc(100% - 44px); margin: 0; font-size: .58rem; font-weight: 600; line-height: 1.2; color: #ef4444; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; -webkit-line-clamp: unset; pointer-events: none; }
+    .cal-cell.cuti .cal-libur { color: #d97706; }
+    .libur-note { display: flex; align-items: center; gap: 10px; border-radius: 12px; padding: 9px 14px; margin: 0 0 12px; font-size: .82rem; font-weight: 600; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; text-align: left; }
+    .libur-note.cuti { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+    .libur-note small { display: block; font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+    .libur-leg { display: flex; flex-wrap: wrap; gap: 14px; font-size: .72rem; color: #64748b; margin: 4px 0 10px; }
+    .libur-leg i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+
     /* --- RESPONSIVE --- */
     @media (max-width: 991px) {
       .room-status { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -263,6 +323,7 @@ window.google = { script: { run: (function () {
     }
     @media (max-width: 576px) {
       .cal-cell { min-height: 58px; padding: 3px; border-radius: 8px; }
+      .cal-libur { display: none; }
       .cal-chips { flex-direction: row; flex-wrap: wrap; gap: 3px; }
       .cal-chip { font-size: 0 !important; width: 8px; height: 8px; padding: 0; border-radius: 50%; border: none !important; }
       .cal-chip.bk { background: var(--c) !important; border-left: none; }
@@ -363,6 +424,7 @@ window.google = { script: { run: (function () {
 
     <div class="cal-grid" id="cal-dow"></div>
     <div class="cal-grid" id="cal-grid"></div>
+    <div class="libur-leg"><span><i style="background:#dc2626"></i>Libur nasional</span><span><i style="background:#f59e0b"></i>Cuti bersama</span></div>
 
     <div class="mt-4" id="cal-month-wrap">
       <div class="judul-sec" id="cal-month-title" style="font-size:0.75rem; margin-bottom:12px;">Event Order bulan ini</div>
@@ -374,6 +436,7 @@ window.google = { script: { run: (function () {
         <div class="judul-sec" id="cal-day-title" style="font-size:0.75rem;">Event Order</div>
         <button type="button" class="cal-today-btn" onclick="bukaEvent(calSelected)">+ Tambah di tanggal ini</button>
       </div>
+      <div id="cal-day-libur"></div>
       <div id="cal-day-list"></div>
     </div>
   </div>
@@ -836,23 +899,19 @@ window.google = { script: { run: (function () {
 
   function showDetail(index) { showDetailObj(dataFiltered[index]); }
 
+  function popupDetail(warna, tag, judul, waktu, rows) {
+    const r = rows.filter(x => x[1]).map(x => '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>').join('');
+    Swal.fire({
+      html: '<div class="dp"><div class="dp-head" style="--c:' + warna + '"><span class="dp-tag">' + tag + '</span><h3>' + esc(judul) + '</h3><div class="dp-time">' + waktu + '</div></div><dl class="dp-rows">' + r + '</dl></div>',
+      customClass: { popup: 'dp-wrap' }, width: 'min(520px, 95vw)',
+      showCloseButton: true, showConfirmButton: false, showCancelButton: true, cancelButtonText: 'Tutup'
+    });
+  }
   function showDetailObj(j) {
     if (!j) return;
-    const isRutin = j.tipe === 'RUTIN';
-    const isSelesai = j.statusWaktu === 'SELESAI';
-    Swal.fire({
-      title: '<span style="font-size:1.1rem; font-weight:700; color:#183E3A">Detail Reservasi</span>',
-      html: `<div style="text-align:left; font-size:0.85rem; background:#f8fafc; padding:18px; border-radius:18px; border:1px solid #e2e8f0; line-height:1.6;">
-          <p><strong>Ruangan:</strong><br>${esc(j.ruangan)}</p>
-          <p><strong>Pemesan:</strong><br>${esc(j.nama)}</p>
-          <p><strong>Agenda:</strong><br>${esc(j.keperluan)}</p>
-          <p style="margin-bottom:0;"><strong>Waktu:</strong><br>${esc(j.hari)}, ${esc(j.tanggal)} (${esc(j.mulai)} - ${esc(j.selesai)})</p>
-        </div>`,
-      showCloseButton: true,
-      showConfirmButton: false,
-      showCancelButton: true,
-      cancelButtonText: 'Tutup'
-    });
+    popupDetail(roomColor(j.ruangan), j.tipe === 'RUTIN' ? 'Jadwal Rutin' : 'Reservasi', j.keperluan,
+      esc(j.hari) + ', ' + (/^\d{4}-\d{2}-\d{2}$/.test(j.tanggal) ? esc(tglIndo(j.tanggal)) : esc(j.tanggal)) + ' &nbsp;|&nbsp; ' + esc(j.mulai) + ' - ' + esc(j.selesai),
+      [['Ruangan', esc(j.ruangan)], ['Pemesan', esc(j.nama)], ['Agenda', esc(j.keperluan)]]);
   }
 
   // =====================================================
@@ -1015,6 +1074,25 @@ window.google = { script: { run: (function () {
 
   function renderLegend() {}
 
+  // Hari libur nasional (L) dan cuti bersama (C) — sumber: SKB 3 Menteri. Tambahkan tahun berikutnya di sini.
+  const LIBUR = {
+    // 2026
+    '2026-01-01':['L','Tahun Baru 2026 Masehi'],'2026-01-16':['L','Isra Mikraj Nabi Muhammad saw.'],'2026-02-16':['C','Cuti Bersama Imlek'],'2026-02-17':['L','Tahun Baru Imlek 2577'],
+    '2026-03-18':['C','Cuti Bersama Nyepi'],'2026-03-19':['L','Hari Suci Nyepi'],'2026-03-20':['C','Cuti Bersama Idulfitri'],'2026-03-21':['L','Idulfitri 1447 H'],'2026-03-22':['L','Idulfitri 1447 H'],
+    '2026-03-23':['C','Cuti Bersama Idulfitri'],'2026-03-24':['C','Cuti Bersama Idulfitri'],'2026-04-03':['L','Wafat Yesus Kristus'],'2026-04-05':['L','Paskah'],'2026-05-01':['L','Hari Buruh Internasional'],
+    '2026-05-14':['L','Kenaikan Yesus Kristus'],'2026-05-15':['C','Cuti Bersama Kenaikan Yesus Kristus'],'2026-05-27':['L','Iduladha 1447 H'],'2026-05-28':['C','Cuti Bersama Iduladha'],
+    '2026-05-31':['L','Hari Raya Waisak 2570'],'2026-06-01':['L','Hari Lahir Pancasila'],'2026-06-16':['L','Tahun Baru Islam 1448 H'],'2026-08-17':['L','Proklamasi Kemerdekaan RI'],
+    '2026-08-25':['L','Maulid Nabi Muhammad saw.'],'2026-12-24':['C','Cuti Bersama Natal'],'2026-12-25':['L','Hari Raya Natal'],
+    // 2027
+    '2027-01-01':['L','Tahun Baru 2027 Masehi'],'2027-01-05':['L','Isra Mikraj Nabi Muhammad saw.'],'2027-02-05':['C','Cuti Bersama Imlek'],'2027-02-06':['L','Tahun Baru Imlek 2578'],
+    '2027-03-08':['L','Hari Suci Nyepi'],'2027-03-09':['C','Cuti Bersama Idulfitri'],'2027-03-10':['L','Idulfitri 1448 H'],'2027-03-11':['L','Idulfitri 1448 H'],'2027-03-12':['C','Cuti Bersama Idulfitri'],
+    '2027-03-15':['C','Cuti Bersama Idulfitri'],'2027-03-25':['C','Cuti Bersama Wafat Yesus Kristus'],'2027-03-26':['L','Wafat Yesus Kristus'],'2027-03-28':['L','Paskah'],'2027-05-01':['L','Hari Buruh Internasional'],
+    '2027-05-06':['L','Kenaikan Yesus Kristus'],'2027-05-17':['L','Iduladha 1448 H'],'2027-05-18':['C','Cuti Bersama Iduladha'],'2027-05-19':['C','Cuti Bersama Waisak'],'2027-05-20':['L','Hari Raya Waisak 2571'],
+    '2027-06-01':['L','Hari Lahir Pancasila'],'2027-06-06':['L','Tahun Baru Islam 1449 H'],'2027-08-15':['L','Maulid Nabi Muhammad saw.'],'2027-08-17':['L','Proklamasi Kemerdekaan RI'],
+    '2027-12-24':['C','Cuti Bersama Natal'],'2027-12-25':['L','Hari Raya Natal'],'2027-12-26':['L','Isra Mikraj Nabi Muhammad saw.']
+  };
+  function infoLibur(ds) { const x = LIBUR[ds]; return x ? { cuti: x[0] === 'C', nama: x[1] } : null; }
+
   function renderKalender() {
     document.getElementById('cal-title').innerText = BULAN[calMonth] + ' ' + calYear;
     document.getElementById('cal-dow').innerHTML = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'].map(h => `<div class="cal-dow">${h}</div>`).join('');
@@ -1031,14 +1109,20 @@ window.google = { script: { run: (function () {
       const evs = itemPadaTanggal(all, ds);
       const ev1 = evs.find(x => x.kind === 'event');
       const dow = (offset + d - 1) % 7;
-      const cls = ['cal-cell', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', dow >= 5 ? 'weekend' : '', ev1 ? 'has-ev' : ''].join(' ');
+      const lb = infoLibur(ds);
+      const cls = ['cal-cell', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', dow >= 5 ? 'weekend' : '', lb ? (lb.cuti ? 'cuti' : 'libur') : '', ev1 ? 'has-ev' : ''].join(' ');
       const chips = evs.slice().sort((a, b) => (a.kind === 'event' ? 0 : 1) - (b.kind === 'event' ? 0 : 1)).slice(0, 3).map(chipHtml).join('');
       const extra = evs.length > 3 ? `<div class="cal-more">+${evs.length - 3} lagi</div>` : '';
-      html += `<div class="${cls}" style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${d}</div><div class="cal-chips">${chips}</div>${extra}</div>`;
+      html += `<div class="${cls}" style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${d}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
     }
     document.getElementById('cal-grid').innerHTML = html;
     renderAgendaHari(all);
     renderEventBulanIni(all);
+  }
+
+  function banerLibur(ds) {
+    const lb = infoLibur(ds);
+    return lb ? '<div class="libur-note' + (lb.cuti ? ' cuti' : '') + '"><div><small>' + (lb.cuti ? 'Cuti Bersama' : 'Libur Nasional') + '</small>' + esc(lb.nama) + '</div></div>' : '';
   }
 
   function pilihTanggal(ds) {
@@ -1047,6 +1131,18 @@ window.google = { script: { run: (function () {
     bukaPopupTanggal(ds);
   }
 
+  function inisial(n) { const t = String(n || '?').trim().split(/\s+/); return esc(((t[0] || '?')[0] + (t.length > 1 ? t[1][0] : (t[0][1] || ''))).toUpperCase()); }
+  function agRow(click, warna, kiri, tag, judul, sub, pic) {
+    return '<div class="ag-item" style="--c:' + warna + '" onclick="' + click + '"><span class="ag-av">' + inisial(pic) + '</span><div class="ag-time">' + kiri + '</div><div class="ag-body">' +
+      (tag ? '<div class="ag-tag">' + tag + '</div>' : '') + '<p class="ag-title">' + esc(judul) + '</p>' +
+      (sub ? '<p class="ag-sub">' + sub + '</p>' : '') + '</div></div>';
+  }
+  function kiriJam(jam) {
+    const t = String(jam || '').split(' - ');
+    return t.length === 2 ? '<span class="j">' + esc(t[0]) + '</span><span class="j2">' + esc(t[1]) + '</span>' : '<span class="j" style="font-size:.8rem">' + esc(jam) + '</span>';
+  }
+  function subJoin(a) { return a.filter(Boolean).join('<span class="sep"></span>'); }
+  function lampTxt(e) { return (e.lampiran || []).length ? e.lampiran.length + ' file' : ''; }
   // Popup berisi event order pada tanggal yang diklik, lengkap dengan tombol tambah
   function bukaPopupTanggal(ds) {
     const evs = itemPadaTanggal(semuaItemKalender(), ds);
@@ -1054,19 +1150,13 @@ window.google = { script: { run: (function () {
     const judul = hariDariYmd(ds) + ', ' + parseInt(p[2], 10) + ' ' + BULAN[parseInt(p[1], 10) - 1] + ' ' + p[0];
     const isi = evs.length ? evs.map(e => {
       const warna = warnaEvent(e);
-      return `<div class="em-item" style="--c:${warna}" onclick="lihatDetailDariPopup('${esc(e.id)}')">
-        <div class="em-date">${e.seharian ? '<b style="font-size:0.72rem">Seharian</b>' : '<b style="font-size:0.95rem">' + esc(e.mulai) + '</b><small>' + esc(e.selesai) + '</small>'}</div>
-        <div class="em-body">
-          <p class="em-title">${esc(e.judul)}</p>
-          <p class="em-meta">${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}</p>
-          ${e.lokasi ? '<p class="em-meta">' + esc(e.lokasi) + '</p>' : ''}
-          ${(e.lampiran || []).length ? '<span class="em-meta">' + e.lampiran.length + ' lampiran</span>' : ''}
-        </div>
-      </div>`;
+      const jamP = e.seharian ? 'Seharian' : (e.mulai + ' - ' + e.selesai);
+      return agRow("lihatDetailDariPopup('" + esc(e.id) + "')", warna, kiriJam(jamP), '', e.judul,
+        subJoin([esc(e.pic), e.departemen ? esc(e.departemen) : '', e.lokasi ? esc(e.lokasi) : '', lampTxt(e)]), e.pic);
     }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
     Swal.fire({
       title: '<span style="font-size:1.05rem; font-weight:700; color:#183E3A">' + judul + '</span>',
-      html: '<div style="text-align:left; max-height:55vh; overflow-y:auto; padding:2px">' + isi + '</div>',
+      html: '<div style="text-align:left; max-height:55vh; overflow-y:auto; padding:2px">' + banerLibur(ds) + isi + '</div>',
       width: 'min(560px, 95vw)', showCloseButton: true, showCancelButton: true,
       confirmButtonText: '+ Tambah Event Order', cancelButtonText: 'Tutup', reverseButtons: true
     }).then(r => { if (r.isConfirmed) bukaEvent(ds); });
@@ -1088,14 +1178,9 @@ window.google = { script: { run: (function () {
     if (!list.length) { box.innerHTML = '<div class="text-center p-4 text-muted small">Belum ada event order di bulan ini.</div>'; return; }
     box.innerHTML = list.map(e => {
       const w = labelWaktu(e), warna = warnaEvent(e), p = e.tanggal.split('-');
-      return `<div class="em-item" style="--c:${warna}" onclick="detailItem('event','${esc(e.id)}')">
-        <div class="em-date"><b>${parseInt(p[2], 10)}</b><small>${BULAN_S[parseInt(p[1], 10) - 1]}</small></div>
-        <div class="em-body">
-          <p class="em-title">${esc(e.judul)}</p>
-          <p class="em-meta">${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • s/d ' + esc(tglIndo(e.tanggalSelesai)) : ''}</p>
-          <p class="em-meta">${esc(e.pic)}${e.departemen ? ' • ' + esc(e.departemen) : ''}${e.lokasi ? ' • ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • ' + e.lampiran.length + ' lampiran' : ''}</p>
-        </div>
-      </div>`;
+      const kiri = '<span class="d">' + parseInt(p[2], 10) + '</span><span class="m">' + BULAN_S[parseInt(p[1], 10) - 1] + '</span><span class="jm">' + esc(w.jam) + '</span>';
+      return agRow("detailItem('event','" + esc(e.id) + "')", warna, kiri, '', e.judul,
+        subJoin([esc(e.pic), e.departemen ? esc(e.departemen) : '', e.lokasi ? esc(e.lokasi) : '', lampTxt(e)]) + (e.tanggal !== e.tanggalSelesai ? '<br><b>s/d ' + esc(tglIndo(e.tanggalSelesai)) + '</b>' : ''), e.pic);
     }).join('');
   }
 
@@ -1103,23 +1188,18 @@ window.google = { script: { run: (function () {
     const evs = itemPadaTanggal(all || semuaItemKalender(), calSelected);
     const p = calSelected.split('-');
     document.getElementById('cal-day-title').innerText = 'Event Order ' + hariDariYmd(calSelected) + ', ' + parseInt(p[2], 10) + ' ' + BULAN[parseInt(p[1], 10) - 1] + ' ' + p[0];
+    document.getElementById('cal-day-libur').innerHTML = banerLibur(calSelected);
     const box = document.getElementById('cal-day-list');
     if (!evs.length) { box.innerHTML = '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>'; return; }
     box.innerHTML = evs.map(e => {
       const w = labelWaktu(e);
       const warna = warnaEvent(e);
       if (e.kind === 'booking') {
-        return `<div class="ev-item" style="border-left-color:${warna}" onclick="detailItem('booking','${e.row}')">
-          <p class="ev-title"><span class="ev-tag">Reservasi</span>${esc(e.judul)}</p>
-          <p class="ev-meta">${esc(w.jam)} • <span style="color:${warna}; font-weight:600;">${esc(e.lokasi)}</span></p>
-          <p class="ev-meta"><b>${esc(e.pic)}</b></p>
-        </div>`;
+        return agRow("detailItem('booking','" + e.row + "')", warna, kiriJam(w.jam), 'Reservasi', e.judul,
+          subJoin(['<b>' + esc(e.lokasi) + '</b>', esc(e.pic)]), e.pic);
       }
-      return `<div class="ev-item" style="border-left-color:${warna}; background:${warna}14" onclick="detailItem('event','${esc(e.id)}')">
-        <p class="ev-title"><span class="ev-tag" style="background:${warna}; color:#fff">Event</span>${esc(e.judul)}</p>
-        <p class="ev-meta">${esc(w.jam)}${e.tanggal !== e.tanggalSelesai ? ' • ' + esc(w.rentang) : ''}</p>
-        <p class="ev-meta"><b>${esc(e.pic)}</b>${e.lokasi ? ' • ' + esc(e.lokasi) : ''}${(e.lampiran || []).length ? ' • ' + e.lampiran.length + ' lampiran' : ''}</p>
-      </div>`;
+      return agRow("detailItem('event','" + esc(e.id) + "')", warna, kiriJam(w.jam), 'Event', e.judul,
+        subJoin([esc(e.pic), e.lokasi ? esc(e.lokasi) : '', lampTxt(e)]) + (e.tanggal !== e.tanggalSelesai ? '<br><b>' + esc(w.rentang) + '</b>' : ''), e.pic);
     }).join('');
   }
 
@@ -1227,22 +1307,9 @@ window.google = { script: { run: (function () {
     const e = eventsData.find(x => x.id === id);
     if (!e) return;
     const w = labelWaktu(e);
-    Swal.fire({
-      title: '<span style="font-size:1.1rem; font-weight:700; color:#183E3A">Detail Event Order</span>',
-      html: `<div style="text-align:left; font-size:0.85rem; background:#f8fafc; padding:18px; border-radius:18px; border:1px solid #e2e8f0; line-height:1.6;">
-          <p><strong>Event:</strong><br>${esc(e.judul)}</p>
-          <p><strong>PIC:</strong><br>${esc(e.pic)}${e.departemen ? ' — ' + esc(e.departemen) : ''}</p>
-          <p><strong>Tanggal:</strong><br>${esc(w.rentang)}</p>
-          <p><strong>Waktu:</strong><br>${esc(w.jam)}</p>
-          <p><strong>Lokasi:</strong><br>${esc(e.lokasi || '-')}</p>
-          ${(e.lampiran || []).length ? '<p><strong>Lampiran:</strong><br>' + e.lampiran.map((l, i) => '<a href="#" class="lamp" onclick="bukaLampiran(\'' + esc(e.id) + '\',' + i + '); return false;">' + esc(l.nama) + '</a>').join('<br>') + '</p>' : ''}
-          <p style="margin-bottom:0;"><strong>Keterangan:</strong><br>${esc(e.keterangan || '-').replace(/\n/g, '<br>')}</p>
-        </div>`,
-      showCloseButton: true,
-      showConfirmButton: false,
-      showCancelButton: true,
-      cancelButtonText: 'Tutup'
-    });
+    const lamp = (e.lampiran || []).map((l, i) => '<a href="#" class="lamp" onclick="bukaLampiran(\'' + esc(e.id) + '\',' + i + '); return false;">' + esc(l.nama) + '</a>').join('<br>');
+    popupDetail(warnaEvent(e), 'Event Order', e.judul, esc(w.rentang) + ' &nbsp;|&nbsp; ' + esc(w.jam),
+      [['PIC', esc(e.pic)], ['Departemen', e.departemen ? esc(e.departemen) : ''], ['Lokasi', e.lokasi ? esc(e.lokasi) : ''], ['Lampiran', lamp], ['Keterangan', e.keterangan ? esc(e.keterangan).replace(/\n/g, '<br>') : '']]);
   }
 </script>
 <script>
