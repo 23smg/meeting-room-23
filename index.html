@@ -436,7 +436,6 @@ window.google = { script: { run: (function () {
         <div class="judul-sec" id="cal-day-title" style="font-size:0.75rem;">Event Order</div>
         <button type="button" class="cal-today-btn" onclick="bukaEvent(calSelected)">+ Tambah di tanggal ini</button>
       </div>
-      <div id="cal-day-libur"></div>
       <div id="cal-day-list"></div>
     </div>
   </div>
@@ -1113,7 +1112,7 @@ window.google = { script: { run: (function () {
       const cls = ['cal-cell', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', dow >= 5 ? 'weekend' : '', lb ? (lb.cuti ? 'cuti' : 'libur') : '', ev1 ? 'has-ev' : ''].join(' ');
       const chips = evs.slice().sort((a, b) => (a.kind === 'event' ? 0 : 1) - (b.kind === 'event' ? 0 : 1)).slice(0, 3).map(chipHtml).join('');
       const extra = evs.length > 3 ? `<div class="cal-more">+${evs.length - 3} lagi</div>` : '';
-      html += `<div class="${cls}" style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${d}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
+      html += `<div class="${cls}"${lb ? ' title="' + esc(lb.nama) + '"' : ''} style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${d}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
     }
     document.getElementById('cal-grid').innerHTML = html;
     renderAgendaHari(all);
@@ -1156,7 +1155,7 @@ window.google = { script: { run: (function () {
     }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
     Swal.fire({
       title: '<span style="font-size:1.05rem; font-weight:700; color:#183E3A">' + judul + '</span>',
-      html: '<div style="text-align:left; max-height:55vh; overflow-y:auto; padding:2px">' + banerLibur(ds) + isi + '</div>',
+      html: '<div style="text-align:left; max-height:55vh; overflow-y:auto; padding:2px">' + isi + '</div>',
       width: 'min(560px, 95vw)', showCloseButton: true, showCancelButton: true,
       confirmButtonText: '+ Tambah Event Order', cancelButtonText: 'Tutup', reverseButtons: true
     }).then(r => { if (r.isConfirmed) bukaEvent(ds); });
@@ -1188,7 +1187,6 @@ window.google = { script: { run: (function () {
     const evs = itemPadaTanggal(all || semuaItemKalender(), calSelected);
     const p = calSelected.split('-');
     document.getElementById('cal-day-title').innerText = 'Event Order ' + hariDariYmd(calSelected) + ', ' + parseInt(p[2], 10) + ' ' + BULAN[parseInt(p[1], 10) - 1] + ' ' + p[0];
-    document.getElementById('cal-day-libur').innerHTML = banerLibur(calSelected);
     const box = document.getElementById('cal-day-list');
     if (!evs.length) { box.innerHTML = '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>'; return; }
     box.innerHTML = evs.map(e => {
