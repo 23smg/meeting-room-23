@@ -31,7 +31,7 @@ window.google = { script: { run: (function () {
 </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -339,7 +339,223 @@ window.google = { script: { run: (function () {
       .tab-btn { min-width: 0; font-size: 0.68rem; padding: 9px 2px; }
     }
     @media (prefers-reduced-motion: reduce) { .falling-leaf { animation: none; } }
-  </style>
+  
+    /* --- Kalender gaya Google Calendar --- */
+    #cal-grid.cal-grid { gap: 0; border-top: 1px solid #dadce0; border-left: 1px solid #dadce0; border-radius: 0; }
+    #cal-dow.cal-grid { border: 0; }
+    .cal-dow { font-size: .68rem; font-weight: 600; letter-spacing: .06em; color: #70757a; padding: 8px 0; }
+    #cal-grid .cal-cell { min-height: 118px; background: #fff; border: 0; border-right: 1px solid #dadce0; border-bottom: 1px solid #dadce0; border-radius: 0; padding: 4px 4px 6px; box-shadow: none; }
+    #cal-grid .cal-cell:hover { background: #f8f9fa; }
+    #cal-grid .cal-cell.empty { background: #fff; cursor: default; }
+    #cal-grid .cal-cell.empty:hover { background: #fff; }
+    #cal-grid .cal-cell.has-ev::before { display: none; }
+    #cal-grid .cal-cell.selected { background: #e6f4ea; box-shadow: none; }
+    #cal-grid .cal-cell.today { border: 0; border-right: 1px solid #dadce0; border-bottom: 1px solid #dadce0; }
+    #cal-grid .cal-cell.weekend .cal-num { color: inherit; }
+    #cal-grid .cal-cell.libur .cal-num { color: #d93025; }
+    .cal-num { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; border-radius: 13px; font-size: .78rem; font-weight: 500; color: #3c4043; margin: 1px 0 3px; padding: 0 4px; }
+    #cal-grid .cal-cell.today .cal-num { background: var(--primary-emerald); color: #fff; font-weight: 700; }
+    .cal-cell.libur .cal-num::after, .cal-cell.cuti .cal-num::after { display: none; }
+    .cal-libur { top: 7px; right: 6px; max-width: calc(100% - 46px); font-size: .62rem; font-weight: 500; color: #d93025; opacity: 1; }
+    .cal-cell.cuti .cal-libur { color: #e37400; }
+    .cal-chips { gap: 1px; }
+    .cal-chip.gc { background: transparent !important; border: 0 !important; box-shadow: none; color: #3c4043 !important; font-size: .72rem; font-weight: 500; padding: 2px 4px 2px 15px; border-radius: 4px; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+    .cal-chip.gc::before { content: ''; position: absolute; left: 4px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--c); }
+    .cal-chip.gc:hover { background: #f1f3f4 !important; }
+    .cal-chip.gcbar { color: #fff; font-size: .72rem; font-weight: 500; border-radius: 4px; padding: 2px 6px; box-shadow: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 1.4; }
+    .cal-more { font-size: .7rem; font-weight: 600; color: #3c4043; padding: 2px 4px; border-radius: 4px; }
+    @media (min-width: 768px) { .cal-chip.gcbar { white-space: nowrap; display: block; -webkit-line-clamp: unset; font-size: .72rem; padding: 2px 6px; } }
+    @media (max-width: 576px) {
+      #cal-grid .cal-cell { min-height: 56px; padding: 3px 2px; }
+      .cal-num { min-width: 22px; height: 22px; font-size: .72rem; }
+      .cal-chips { flex-direction: row; flex-wrap: wrap; gap: 3px; padding-left: 3px; }
+      .cal-chip.gc, .cal-chip.gcbar { font-size: 0 !important; width: 7px; height: 7px; padding: 0; border-radius: 50%; background: var(--c) !important; }
+      .cal-chip.gc::before { display: none; }
+      .cal-chip.gcbar { border-radius: 2px; width: 10px; height: 7px; }
+    }
+
+    /* --- Kalender gaya Google Calendar (tampilan Month) --- */
+    #cal-grid.c5, #cal-dow.c5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    #cal-grid.c7, #cal-dow.c7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    #cal-grid.cal-grid { border: 0; }
+    .cal-dow { font-size: .72rem; font-weight: 500; letter-spacing: .04em; color: #3c4043; padding: 10px 0 0; }
+    #cal-grid .cal-cell { min-height: 132px; padding: 6px 6px 8px; border-top: 1px solid #dadce0; border-right: 1px solid #dadce0; border-bottom: 0; border-left: 0; }
+    #cal-grid.c5 .cal-cell:nth-child(5n), #cal-grid.c7 .cal-cell:nth-child(7n) { border-right: 0; }
+    #cal-grid .cal-cell.today { border-top: 1px solid #dadce0; border-right: 1px solid #dadce0; border-bottom: 0; }
+    #cal-grid.c5 .cal-cell.today:nth-child(5n), #cal-grid.c7 .cal-cell.today:nth-child(7n) { border-right: 0; }
+    .cal-num { display: flex; margin: 0 auto 4px; width: 28px; min-width: 28px; height: 28px; padding: 0; border-radius: 50%; font-size: .85rem; font-weight: 500; color: #202124; }
+    .cal-libur { left: 6px; right: auto; top: 9px; max-width: calc(50% - 24px); font-size: .6rem; text-align: left; }
+    .cal-chips { gap: 2px; }
+    .cal-chip.gc { font-size: .85rem; font-weight: 500; color: #202124 !important; padding: 3px 4px 3px 22px; line-height: 1.35; }
+    .cal-chip.gc::before { left: 6px; width: 10px; height: 10px; margin-top: -5px; box-sizing: border-box; background: transparent; border: 2px solid var(--c); }
+    .cal-chip.gcbar { font-size: .85rem; padding: 3px 8px; }
+    .cal-more { font-size: .8rem; padding: 3px 6px; }
+    .libur-leg { align-items: center; }
+    .wk-toggle { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; }
+    .wk-toggle input { accent-color: var(--primary-emerald); width: 14px; height: 14px; }
+    @media (max-width: 576px) {
+      #cal-grid .cal-cell { min-height: 60px; padding: 4px 2px; }
+      .cal-num { width: 24px; min-width: 24px; height: 24px; font-size: .75rem; }
+      .cal-libur { display: none; }
+      .cal-chip.gc, .cal-chip.gcbar { font-size: 0 !important; width: 7px; height: 7px; padding: 0; border-radius: 50%; background: var(--c) !important; border: 0; }
+      .cal-chip.gc::before { display: none; }
+      .cal-chip.gcbar { border-radius: 2px; width: 10px; }
+    }
+
+    /* --- Kalender persis Google Calendar --- */
+    .cal-head, #cal-dow, #cal-grid { font-family: 'Google Sans', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .cal-head { justify-content: flex-start; gap: 8px; margin-bottom: 10px; }
+    .cal-today-btn { border: 1px solid #dadce0; background: #fff; color: #3c4043; border-radius: 20px; height: 36px; padding: 0 18px; font-size: .875rem; font-weight: 500; }
+    .cal-today-btn:hover { background: #f1f3f4; }
+    .cal-nav-btn { background: transparent; color: #5f6368; border-radius: 50%; width: 36px; height: 36px; font-size: 1.6rem; line-height: 1; padding: 0 0 3px; display: inline-flex; align-items: center; justify-content: center; font-weight: 400; }
+    .cal-nav-btn:hover { background: #f1f3f4; }
+    .cal-title { font-size: 1.4rem; font-weight: 400; color: #3c4043; min-width: 0; text-align: left; margin-left: 8px; }
+    .cal-dow { font-size: .69rem; font-weight: 500; letter-spacing: .08em; color: #70757a; text-transform: uppercase; padding: 8px 0 0; }
+    #cal-grid .cal-cell { padding: 4px 4px 6px; }
+    .cal-num { width: fit-content; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 13px; font-size: .75rem; font-weight: 500; color: #3c4043; margin: 0 auto 2px; }
+    #cal-grid .cal-cell.other .cal-num { color: #70757a; }
+    #cal-grid .cal-cell.today .cal-num { background: #1a73e8; color: #fff; font-weight: 500; }
+    #cal-grid .cal-cell.libur .cal-num { color: #d93025; }
+    #cal-grid .cal-cell.cuti .cal-num { color: #e37400; }
+    #cal-grid .cal-cell.today.libur .cal-num, #cal-grid .cal-cell.today.cuti .cal-num { color: #fff; }
+    .cal-libur { top: 8px; font-size: .58rem; }
+    .cal-chips { gap: 1px; }
+    .cal-chip.gc { font-size: .75rem; height: 22px; line-height: 22px; padding: 0 4px 0 19px; font-weight: 500; color: #3c4043 !important; }
+    .cal-chip.gc::before { left: 5px; width: 9px; height: 9px; margin-top: -4.5px; border-width: 2px; }
+    .cal-chip.gcbar { font-size: .75rem; height: 22px; line-height: 22px; padding: 0 8px; font-weight: 500; margin: 1px 0; }
+    .cal-more { font-size: .75rem; font-weight: 500; line-height: 22px; padding: 0 8px; color: #3c4043; cursor: pointer; }
+    .cal-more:hover { background: #f1f3f4; }
+    @media (max-width: 576px) {
+      .cal-title { font-size: 1.1rem; }
+      .cal-today-btn { padding: 0 12px; height: 32px; }
+      .cal-nav-btn { width: 32px; height: 32px; }
+      #cal-grid .cal-cell { min-height: 60px; padding: 3px 1px; }
+      .cal-num { min-width: 22px; height: 22px; padding: 0 3px; font-size: .7rem; }
+      .cal-chip.gc, .cal-chip.gcbar { font-size: 0 !important; width: 7px; height: 7px; padding: 0; margin: 0; line-height: 7px; border-radius: 50%; background: var(--c) !important; border: 0; }
+      .cal-chip.gc::before { display: none; }
+      .cal-chip.gcbar { border-radius: 2px; width: 10px; }
+      .cal-more { display: none; }
+    }
+
+    /* --- Kalender lengkap: sidebar, toolbar, minggu/hari, popover --- */
+    .gc-layout { display: grid; grid-template-columns: 252px minmax(0, 1fr); gap: 22px; align-items: start; }
+    .gc-main { min-width: 0; }
+    .gc-side { position: sticky; top: 12px; font-family: 'Google Sans', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .gc-create { display: inline-flex; align-items: center; gap: 10px; border: 0; background: var(--primary-emerald); color: #fff; height: 48px; padding: 0 24px 0 18px; border-radius: 24px; font-size: .9rem; font-weight: 600; box-shadow: 0 2px 8px rgba(24,62,58,.3); cursor: pointer; margin-bottom: 18px; }
+    .gc-create span { font-size: 1.4rem; line-height: 1; font-weight: 400; }
+    .gc-create:hover { box-shadow: 0 4px 14px rgba(24,62,58,.4); }
+    .gc-mini-h { display: flex; align-items: center; justify-content: space-between; font-size: .85rem; font-weight: 600; color: #3c4043; margin-bottom: 6px; }
+    .gc-mini-h button { border: 0; background: none; width: 26px; height: 26px; border-radius: 50%; font-size: 1.2rem; line-height: 1; color: #5f6368; cursor: pointer; }
+    .gc-mini-h button:hover { background: #f1f3f4; }
+    .gc-mini-g { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; }
+    .gc-mini-g b { font-size: .65rem; font-weight: 500; color: #70757a; padding: 4px 0; }
+    .gc-mini-g button { border: 0; background: none; height: 30px; font-size: .72rem; color: #3c4043; cursor: pointer; border-radius: 15px; padding: 0; }
+    .gc-mini-g button.o { color: #9aa0a6; }
+    .gc-mini-g button:hover { background: #f1f3f4; }
+    .gc-mini-g button.r { background: #e8f0fe; border-radius: 0; }
+    .gc-mini-g button.s { background: #e8f0fe; color: #1a73e8; font-weight: 700; border-radius: 15px; }
+    .gc-mini-g button.t { background: #1a73e8; color: #fff; font-weight: 700; border-radius: 15px; }
+    .gc-sec { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #5f6368; margin: 20px 0 6px; }
+    .gc-chk { display: flex; align-items: center; gap: 10px; padding: 5px 4px; font-size: .84rem; color: #3c4043; cursor: pointer; user-select: none; }
+    .gc-chk input { position: absolute; opacity: 0; pointer-events: none; }
+    .gc-chk i { width: 16px; height: 16px; border-radius: 3px; border: 2px solid var(--c); display: inline-block; position: relative; flex: none; }
+    .gc-chk input:checked + i { background: var(--c); }
+    .gc-chk input:checked + i::after { content: ''; position: absolute; left: 3px; top: -1px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+    .gc-chk input:disabled + i { opacity: .8; }
+    .gc-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .gc-toolbar .cal-title { margin-left: 4px; }
+    .gc-spacer { flex: 1 1 auto; }
+    .gc-burger { display: none; border: 0; background: none; width: 36px; height: 36px; border-radius: 50%; color: #5f6368; cursor: pointer; align-items: center; justify-content: center; }
+    .gc-burger:hover { background: #f1f3f4; }
+    .gc-search { position: relative; flex: 0 1 230px; }
+    .gc-search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #70757a; pointer-events: none; }
+    .gc-search input { width: 100%; height: 36px; border: 1px solid #dadce0; border-radius: 18px; padding: 0 14px 0 36px; font-size: .84rem; outline: none; background: #fff; font-family: inherit; }
+    .gc-search input:focus { border-color: var(--primary-emerald); box-shadow: 0 0 0 2px rgba(24,62,58,.12); }
+    .gc-results { display: none; position: absolute; right: 0; top: 42px; width: min(360px, 92vw); background: #fff; border-radius: 14px; box-shadow: 0 8px 28px rgba(15,23,42,.2); z-index: 1100; max-height: 60vh; overflow: auto; padding: 6px; }
+    .gc-res { display: flex; gap: 10px; width: 100%; text-align: left; border: 0; background: none; padding: 9px 10px; border-radius: 10px; cursor: pointer; font-family: inherit; }
+    .gc-res:hover { background: #f1f3f4; }
+    .gc-res i { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex: none; }
+    .gc-res b { display: block; font-size: .85rem; color: #202124; }
+    .gc-res small { display: block; font-size: .72rem; color: #5f6368; }
+    .gc-res-none, .gc-res-more { padding: 14px; text-align: center; font-size: .8rem; color: #70757a; }
+    .gc-view { position: relative; }
+    .gc-view > button { border: 1px solid #dadce0; background: #fff; color: #3c4043; border-radius: 20px; height: 36px; padding: 0 16px; font-size: .875rem; font-weight: 500; cursor: pointer; font-family: inherit; }
+    .gc-view > button:hover { background: #f1f3f4; }
+    .gc-viewmenu { display: none; position: absolute; right: 0; top: 42px; min-width: 170px; background: #fff; border-radius: 10px; box-shadow: 0 8px 28px rgba(15,23,42,.2); z-index: 1100; padding: 6px 0; }
+    .gc-viewmenu.show { display: block; }
+    .gc-viewmenu button { display: flex; justify-content: space-between; width: 100%; border: 0; background: none; padding: 9px 16px; font-size: .85rem; color: #3c4043; cursor: pointer; font-family: inherit; }
+    .gc-viewmenu button:hover { background: #f1f3f4; }
+    .gc-viewmenu button.on { font-weight: 700; color: #1a73e8; }
+    .gc-viewmenu kbd { font-family: inherit; font-size: .72rem; color: #70757a; background: none; padding: 0; }
+    .gc-backdrop { display: none; }
+
+    /* grid waktu */
+    #gc-time { font-family: 'Google Sans', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .tg-scroll { max-height: 70vh; min-height: 420px; overflow: auto; border-top: 1px solid #dadce0; position: relative; }
+    .tg-top { position: sticky; top: 0; z-index: 6; background: #fff; }
+    .tg-head, .tg-allday, .tg-body { display: grid; }
+    .tg-corner, .tg-adlab { border-bottom: 1px solid #dadce0; }
+    .tg-dh { text-align: center; padding: 6px 2px 4px; border-left: 1px solid #dadce0; border-bottom: 0; min-width: 0; }
+    .tg-dh.link { cursor: pointer; }
+    .tg-dh .dw { display: block; font-size: .68rem; font-weight: 500; letter-spacing: .08em; color: #70757a; }
+    .tg-dh .dn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; font-size: 1.4rem; color: #3c4043; margin-top: 2px; }
+    .tg-dh.link:hover .dn { background: #f1f3f4; }
+    .tg-dh.today .dw { color: #1a73e8; }
+    .tg-dh.today .dn { background: #1a73e8; color: #fff; }
+    .tg-dh.libur .dn { color: #d93025; }
+    .tg-dh.libur.today .dn { color: #fff; }
+    .tg-dh small { display: block; font-size: .6rem; color: #d93025; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
+    .tg-ad { border-left: 1px solid #dadce0; border-bottom: 1px solid #dadce0; padding: 2px 3px; min-height: 28px; min-width: 0; }
+    .tg-adbar { color: #fff; font-size: .72rem; font-weight: 500; line-height: 20px; border-radius: 4px; padding: 0 6px; margin: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+    .tg-gutter { position: relative; height: 1152px; }
+    .tg-gutter span { position: absolute; right: 8px; font-size: .65rem; color: #70757a; }
+    .tg-col { position: relative; height: 1152px; border-left: 1px solid #dadce0; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 47px, #e8eaed 47px, #e8eaed 48px); cursor: pointer; min-width: 0; }
+    .tg-ev { position: absolute; box-sizing: border-box; color: #fff; border-radius: 6px; padding: 2px 6px; font-size: .72rem; line-height: 1.3; overflow: hidden; cursor: pointer; border: 1px solid #fff; box-shadow: 0 1px 2px rgba(15,23,42,.18); z-index: 2; }
+    .tg-ev b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tg-ev span { display: block; opacity: .95; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tg-ev:hover { filter: brightness(.94); z-index: 3; }
+    .tg-ev[style*="height:22px"] b, .tg-ev[style*="height:2"] b { display: inline; }
+    .tg-sel { position: absolute; left: 2px; right: 2px; background: rgba(26,115,232,.9); color: #fff; border-radius: 6px; font-size: .72rem; padding: 3px 6px; z-index: 4; pointer-events: none; }
+    .tg-now { position: absolute; left: 0; right: 0; height: 0; border-top: 2px solid #ea4335; z-index: 5; pointer-events: none; }
+    .tg-now i { position: absolute; left: -6px; top: -6px; width: 10px; height: 10px; border-radius: 50%; background: #ea4335; }
+
+    /* popover */
+    .gc-pop { position: fixed; z-index: 1100; width: 320px; max-width: calc(100vw - 16px); background: #fff; border-radius: 14px; box-shadow: 0 10px 36px rgba(15,23,42,.28); padding: 16px 18px 12px; font-family: 'Google Sans', Roboto, 'Helvetica Neue', Arial, sans-serif; animation: pop .15s ease; }
+    .gc-pop-x { position: absolute; right: 8px; top: 6px; border: 0; background: none; font-size: 1.4rem; line-height: 1; color: #5f6368; cursor: pointer; width: 30px; height: 30px; border-radius: 50%; }
+    .gc-pop-x:hover { background: #f1f3f4; }
+    .gc-pop-h { display: flex; gap: 12px; padding-right: 26px; }
+    .gc-pop-h > i { width: 14px; height: 14px; border-radius: 4px; margin-top: 4px; flex: none; }
+    .gc-pop-tag { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #70757a; }
+    .gc-pop-t { font-size: 1.1rem; font-weight: 500; color: #202124; line-height: 1.3; overflow-wrap: anywhere; }
+    .gc-pop-s { font-size: .8rem; color: #5f6368; margin-top: 2px; }
+    .gc-pop-r { margin: 10px 0 0 26px; }
+    .gc-pop-r > div { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 8px; padding: 3px 0; font-size: .82rem; }
+    .gc-pop-r dt { font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #70757a; padding-top: 2px; margin: 0; }
+    .gc-pop-r dd { margin: 0; color: #202124; overflow-wrap: anywhere; }
+    .gc-pop-f { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .gc-pop-f button { border: 0; background: none; color: #1a73e8; font-weight: 600; font-size: .85rem; padding: 8px 14px; border-radius: 18px; cursor: pointer; font-family: inherit; }
+    .gc-pop-f button:hover { background: #e8f0fe; }
+    .gc-pop-btns { display: grid; gap: 8px; margin-top: 12px; }
+    .gc-pop-btns button { border: 1px solid #dadce0; background: #fff; border-radius: 10px; padding: 10px 14px; font-size: .88rem; font-weight: 600; color: #183E3A; cursor: pointer; text-align: left; font-family: inherit; }
+    .gc-pop-btns button:hover { background: var(--bg-mint, #ecfdf0); border-color: var(--primary-emerald); }
+    .gc-pop-buat { width: 280px; }
+
+    @media (max-width: 991px) {
+      .gc-layout { grid-template-columns: minmax(0, 1fr); }
+      .gc-burger { display: inline-flex; }
+      .gc-side { position: fixed; z-index: 2600; left: 0; top: 0; bottom: 0; width: 292px; max-width: 86vw; background: #fff; padding: 18px; overflow-y: auto; transform: translateX(-102%); transition: transform .2s; box-shadow: 4px 0 24px rgba(15,23,42,.25); }
+      .gc-side.open { transform: none; }
+      .gc-backdrop.show { display: block; position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 2500; }
+    }
+    @media (max-width: 576px) {
+      .gc-search { flex: 1 1 100%; order: 9; }
+      .gc-toolbar .cal-title { flex: 1 1 100%; margin: 0 0 2px; order: 8; }
+      .gc-spacer { display: none; }
+      .gc-view { margin-left: auto; }
+      .gc-pop { left: 8px !important; right: 8px; top: auto !important; bottom: 8px; width: auto; max-width: none; }
+      .tg-dh .dn { width: 32px; height: 32px; font-size: 1.1rem; }
+    }
+</style>
 </head>
 <body onload="muatDataInit()">
 
@@ -408,23 +624,54 @@ window.google = { script: { run: (function () {
     <div class="header-section">
       <div class="judul-sec">Event Order</div>
       <div class="header-actions">
-        <button type="button" class="btn-add" onclick="bukaEvent()">+ Event Order</button>
+        <button type="button" class="btn-add" onclick="menuBuat(event)">+ Buat</button>
         <button type="button" class="btn-refresh" id="btn-refresh-ev" onclick="refreshEvents()" title="Refresh Data" aria-label="Refresh Data"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
       </div>
     </div>
 
-    <div class="cal-head">
-      <div class="d-flex gap-2">
-        <button type="button" class="cal-nav-btn" onclick="gantiBulan(-1)">‹</button>
-        <button type="button" class="cal-nav-btn" onclick="gantiBulan(1)">›</button>
+    <div class="gc-layout">
+      <aside class="gc-side" id="gc-side">
+        <button type="button" class="gc-create" onclick="menuBuat(event)"><span>+</span> Buat</button>
+        <div class="gc-mini" id="gc-mini"></div>
+        <div class="gc-sec">Kalender</div>
+        <label class="gc-chk" style="--c:#475569"><input type="checkbox" checked disabled><i></i>Event Order</label>
+        <label class="gc-chk" style="--c:#183E3A"><input type="checkbox" id="chk-res" onchange="toggleLayerRes(this.checked)"><i></i>Reservasi Ruangan</label>
+        <div class="gc-sec">Ruangan</div>
+        <div id="gc-rooms"></div>
+      </aside>
+      <div class="gc-backdrop" id="gc-backdrop" onclick="toggleSide(false)"></div>
+      <div class="gc-main">
+        <div class="gc-toolbar">
+          <button type="button" class="gc-burger" onclick="toggleSide()" aria-label="Menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          <button type="button" class="cal-today-btn" onclick="keHariIni()">Hari ini</button>
+          <div class="d-flex">
+            <button type="button" class="cal-nav-btn" onclick="gantiPeriode(-1)" aria-label="Sebelumnya">&#8249;</button>
+            <button type="button" class="cal-nav-btn" onclick="gantiPeriode(1)" aria-label="Berikutnya">&#8250;</button>
+          </div>
+          <div class="cal-title" id="cal-title"></div>
+          <div class="gc-spacer"></div>
+          <div class="gc-search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="text" id="gc-q" placeholder="Cari agenda, PIC, ruangan..." autocomplete="off" oninput="cariKalender(this.value)" onfocus="cariKalender(this.value)">
+            <div class="gc-results" id="gc-results"></div>
+          </div>
+          <div class="gc-view">
+            <button type="button" id="gc-viewbtn" onclick="toggleViewMenu(event)">Bulan &#9662;</button>
+            <div class="gc-viewmenu" id="gc-viewmenu">
+              <button type="button" data-v="day" onclick="setView('day')">Hari <kbd>D</kbd></button>
+              <button type="button" data-v="week" onclick="setView('week')">Minggu <kbd>W</kbd></button>
+              <button type="button" data-v="month" onclick="setView('month')">Bulan <kbd>M</kbd></button>
+            </div>
+          </div>
+        </div>
+        <div id="gc-month">
+          <div class="cal-grid" id="cal-dow"></div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div class="libur-leg"><span><i style="background:#dc2626"></i>Libur nasional</span><span><i style="background:#f59e0b"></i>Cuti bersama</span></div>
+        </div>
+        <div id="gc-time" style="display:none"></div>
       </div>
-      <div class="cal-title" id="cal-title"></div>
-      <button type="button" class="cal-today-btn" onclick="keHariIni()">Hari ini</button>
     </div>
-
-    <div class="cal-grid" id="cal-dow"></div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div class="libur-leg"><span><i style="background:#dc2626"></i>Libur nasional</span><span><i style="background:#f59e0b"></i>Cuti bersama</span></div>
 
     <div class="mt-4" id="cal-month-wrap">
       <div class="judul-sec" id="cal-month-title" style="font-size:0.75rem; margin-bottom:12px;">Event Order bulan ini</div>
@@ -727,7 +974,7 @@ window.google = { script: { run: (function () {
       if (!d) return;
       if (d.rooms && d.rooms.length) { ROOMS = d.rooms.filter(r => r.reservasi !== 'TIDAK'); }
       if (d.dept && d.dept.length) DEPT = d.dept;
-      renderRoomChips(); renderEvRef(); renderStatusRuangan();
+      renderRoomChips(); renderEvRef(); renderStatusRuangan(); renderSide();
     }).getRefData();
   }
 
@@ -1047,7 +1294,9 @@ window.google = { script: { run: (function () {
 
   // Hanya event order (reservasi ruangan tidak ditampilkan di sini), setelah filter kategori
   function semuaItemKalender() {
-    let list = eventsData.filter(e => !katTersembunyi.has(e.kategori)).map(e => Object.assign({ kind: 'event' }, e));
+    const r = rentangTampil();
+    let list = eventsData.filter(e => !katTersembunyi.has(e.kategori) && !eventRuangTersembunyi(e)).map(e => Object.assign({ kind: 'event' }, e));
+    if (layerRes) list = list.concat(itemBooking(r.from, r.to));
     return list;
   }
 
@@ -1066,10 +1315,332 @@ window.google = { script: { run: (function () {
 
   function chipHtml(e) {
     const w = warnaEvent(e);
-    const teks = (e.seharian ? '' : e.mulai + ' ') + (e.kind === 'booking' ? (roomOf(e.lokasi) ? roomOf(e.lokasi).short + ': ' : '') : '') + e.judul;
-    if (e.kind === 'booking') return `<div class="cal-chip bk" style="--c:${w}" title="${esc(e.lokasi)} - ${esc(e.judul)}">${esc(teks)}</div>`;
-    return `<div class="cal-chip evn" style="background:${w}" title="Event: ${esc(e.judul)}">${esc(teks)}</div>`;
+    const rm = roomOf(e.lokasi);
+    const teks = (e.seharian ? '' : e.mulai + ' ') + (e.kind === 'booking' ? (rm ? rm.short + ': ' : '') : '') + e.judul;
+    const klik = klikItem(e, e.tanggal);
+    if (e.kind === 'booking') return `<div class="cal-chip bk gc" style="--c:${w}"${klik} title="${esc(e.lokasi)} - ${esc(e.judul)}">${esc(teks)}</div>`;
+    const blok = e.seharian || e.tanggal !== e.tanggalSelesai;
+    if (blok) return `<div class="cal-chip evn gcbar" style="background:${w}; --c:${w}"${klik} title="Event: ${esc(e.judul)}">${esc(e.judul)}</div>`;
+    return `<div class="cal-chip evn gc" style="--c:${w}"${klik} title="Event: ${esc(e.judul)}">${esc(teks)}</div>`;
   }
+
+  // =====================================================
+  // KALENDER GAYA GOOGLE: tampilan Bulan / Minggu / Hari, sidebar, pencarian, popup
+  // =====================================================
+  const HOUR_H = 48;
+  let calView = 'month';
+  try { const v = localStorage.getItem('gcView'); if (v === 'week' || v === 'day' || v === 'month') calView = v; } catch (e) {}
+  let layerRes = false;
+  try { layerRes = localStorage.getItem('gcRes') === '1'; } catch (e) {}
+  const ruangHidden = new Set();
+  let tgScroll = null, tgDrag = null, tgJust = false, miniY = null, miniM = null;
+
+  function tambahHari(ds, n) { const p = ds.split('-'); return ymd(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
+  function awalMinggu(ds) { const p = ds.split('-'); const dow = (new Date(+p[0], +p[1] - 1, +p[2]).getDay() + 6) % 7; return tambahHari(ds, -dow); }
+
+  function bookingKeItem(j, ds) {
+    return { kind: 'booking', row: j.row, id: 'b' + j.row, judul: j.keperluan || 'Reservasi', lokasi: j.ruangan, pic: j.nama,
+      mulai: j.mulai, selesai: j.selesai, tanggal: ds, tanggalSelesai: ds, seharian: false, rutin: j.tipe === 'RUTIN' };
+  }
+  function itemBooking(from, to) {
+    const out = [];
+    if (!dataLokal.length) return out;
+    for (let ds = from; ds <= to; ds = tambahHari(ds, 1)) {
+      const hari = hariDariYmd(ds);
+      dataLokal.forEach(j => {
+        const r = roomOf(j.ruangan);
+        if (r && ruangHidden.has(r.key)) return;
+        if ((j.tipe === 'RUTIN' && j.hari === hari) || (j.tipe !== 'RUTIN' && j.tanggal === ds)) out.push(bookingKeItem(j, ds));
+      });
+    }
+    return out;
+  }
+  function eventRuangTersembunyi(e) { const r = roomOf(e.lokasi); return !!(r && ruangHidden.has(r.key)); }
+  function rentangTampil() {
+    if (calView === 'week') { const a = awalMinggu(calSelected); return { from: a, to: tambahHari(a, 6) }; }
+    if (calView === 'day') return { from: calSelected, to: calSelected };
+    const off = (new Date(calYear, calMonth, 1).getDay() + 6) % 7;
+    const a = ymd(new Date(calYear, calMonth, 1 - off));
+    return { from: a, to: tambahHari(a, 41) };
+  }
+
+  function judulPeriode() {
+    if (calView === 'month') return BULAN[calMonth] + ' ' + calYear;
+    if (calView === 'day') { const p = calSelected.split('-'); return hariDariYmd(calSelected) + ', ' + parseInt(p[2], 10) + ' ' + BULAN[parseInt(p[1], 10) - 1] + ' ' + p[0]; }
+    const a = awalMinggu(calSelected), b = tambahHari(a, 6), pa = a.split('-'), pb = b.split('-');
+    const ma = parseInt(pa[1], 10) - 1, mb = parseInt(pb[1], 10) - 1;
+    if (ma === mb) return parseInt(pa[2], 10) + ' – ' + parseInt(pb[2], 10) + ' ' + BULAN[ma] + ' ' + pb[0];
+    if (pa[0] === pb[0]) return parseInt(pa[2], 10) + ' ' + BULAN_S[ma] + ' – ' + parseInt(pb[2], 10) + ' ' + BULAN_S[mb] + ' ' + pb[0];
+    return tglIndo(a) + ' – ' + tglIndo(b);
+  }
+
+  function setView(v) {
+    const p = calSelected.split('-');
+    if (v !== 'month') {
+      if (+p[0] !== calYear || +p[1] - 1 !== calMonth) {
+        calSelected = calYear + '-' + pad2(calMonth + 1) + '-01';
+        const h = ymd(new Date());
+        if (h.slice(0, 7) === calSelected.slice(0, 7)) calSelected = h;
+      }
+    } else { calYear = +p[0]; calMonth = +p[1] - 1; }
+    calView = v;
+    try { localStorage.setItem('gcView', v); } catch (e) {}
+    tutupPop(); tutupViewMenu();
+    renderKalender();
+  }
+  function gantiPeriode(d) {
+    tutupPop();
+    if (calView === 'month') return gantiBulan(d);
+    calSelected = tambahHari(calSelected, (calView === 'week' ? 7 : 1) * d);
+    const p = calSelected.split('-'); calYear = +p[0]; calMonth = +p[1] - 1;
+    renderKalender();
+  }
+  function bukaHari(ds) { calSelected = ds; setView('day'); }
+  function toggleViewMenu(e) { e.stopPropagation(); document.getElementById('gc-viewmenu').classList.toggle('show'); }
+  function tutupViewMenu() { const m = document.getElementById('gc-viewmenu'); if (m) m.classList.remove('show'); }
+  function toggleSide(v) {
+    const s = document.getElementById('gc-side'), b = document.getElementById('gc-backdrop');
+    const on = typeof v === 'boolean' ? v : !s.classList.contains('open');
+    s.classList.toggle('open', on); b.classList.toggle('show', on);
+  }
+  function toggleLayerRes(v) { layerRes = !!v; try { localStorage.setItem('gcRes', v ? '1' : '0'); } catch (e) {} renderKalender(); }
+  function toggleRuang(k, on) { if (on) ruangHidden.delete(k); else ruangHidden.add(k); renderKalender(); }
+
+  function renderToolbar() {
+    document.getElementById('cal-title').innerText = judulPeriode();
+    document.getElementById('gc-viewbtn').innerHTML = { month: 'Bulan', week: 'Minggu', day: 'Hari' }[calView] + ' &#9662;';
+    document.querySelectorAll('#gc-viewmenu button').forEach(b => b.classList.toggle('on', b.dataset.v === calView));
+  }
+  function renderSide() {
+    const mini = document.getElementById('gc-mini'); if (!mini) return;
+    miniY = calYear; miniM = calMonth; renderMini();
+    document.getElementById('chk-res').checked = layerRes;
+    document.getElementById('gc-rooms').innerHTML = ROOMS.map(r =>
+      '<label class="gc-chk" style="--c:' + r.color + '"><input type="checkbox" ' + (ruangHidden.has(r.key) ? '' : 'checked') + ' onchange="toggleRuang(\'' + esc(r.key) + '\', this.checked)"><i></i>' + esc(r.name || r.key) + '</label>').join('');
+  }
+  function renderMini() {
+    const el = document.getElementById('gc-mini'); if (!el) return;
+    const y = miniY, m = miniM, off = (new Date(y, m, 1).getDay() + 6) % 7, hariIni = ymd(new Date());
+    let ra = null, rb = null;
+    if (calView === 'week') { ra = awalMinggu(calSelected); rb = tambahHari(ra, 6); } else if (calView === 'day') { ra = rb = calSelected; }
+    let h = '<div class="gc-mini-h"><span>' + BULAN[m] + ' ' + y + '</span><span><button type="button" onclick="miniGanti(-1)" aria-label="Bulan sebelumnya">&#8249;</button><button type="button" onclick="miniGanti(1)" aria-label="Bulan berikutnya">&#8250;</button></span></div><div class="gc-mini-g">' +
+      ['S', 'S', 'R', 'K', 'J', 'S', 'M'].map(x => '<b>' + x + '</b>').join('');
+    for (let i = 0; i < 42; i++) {
+      const dt = new Date(y, m, 1 - off + i), ds = ymd(dt);
+      const cls = [dt.getMonth() !== m ? 'o' : '', ds === hariIni ? 't' : '', (calView === 'month' && ds === calSelected) ? 's' : '', (ra && ds >= ra && ds <= rb) ? 'r' : ''].join(' ');
+      h += '<button type="button" class="' + cls + '" onclick="pilihDariMini(\'' + ds + '\')">' + dt.getDate() + '</button>';
+    }
+    el.innerHTML = h + '</div>';
+  }
+  function miniGanti(d) { miniM += d; if (miniM < 0) { miniM = 11; miniY--; } if (miniM > 11) { miniM = 0; miniY++; } renderMini(); }
+  function pilihDariMini(ds) {
+    calSelected = ds; const p = ds.split('-'); calYear = +p[0]; calMonth = +p[1] - 1;
+    toggleSide(false); renderKalender();
+  }
+
+  // ---------- Popover ----------
+  function tutupPop() { const p = document.getElementById('gc-pop'); if (p) p.remove(); }
+  function tampilPop(html, a, cls) {
+    tutupPop();
+    const el = document.createElement('div');
+    el.id = 'gc-pop'; el.className = 'gc-pop ' + (cls || ''); el.innerHTML = html;
+    document.body.appendChild(el);
+    const w = el.offsetWidth, h = el.offsetHeight, W = window.innerWidth, H = window.innerHeight;
+    let left = a.right + 8;
+    if (left + w > W - 8) left = a.left - w - 8;
+    if (left < 8) left = Math.max(8, Math.min(W - w - 8, a.left));
+    let top = Math.max(8, Math.min(H - h - 8, a.top - 8));
+    el.style.left = left + 'px'; el.style.top = top + 'px';
+    return el;
+  }
+  function anchorDari(ev) { const r = (ev.currentTarget || ev.target).getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; }
+
+  function popItem(ev, kind, id, ds) {
+    const a = anchorDari(ev);
+    let judul, warna, tag, waktu, rows;
+    if (kind === 'booking') {
+      const j = dataLokal.find(x => String(x.row) === String(id)); if (!j) return;
+      judul = j.keperluan; warna = roomColor(j.ruangan); tag = j.tipe === 'RUTIN' ? 'Jadwal Rutin' : 'Reservasi';
+      const tgl = j.tipe === 'RUTIN' ? (ds ? hariDariYmd(ds) + ', ' + tglIndo(ds) : 'Setiap ' + j.hari) : (hariDariYmd(j.tanggal) + ', ' + tglIndo(j.tanggal));
+      waktu = esc(tgl) + ' &middot; ' + esc(j.mulai) + ' - ' + esc(j.selesai);
+      rows = [['Ruangan', esc(j.ruangan)], ['Pemesan', esc(j.nama)]];
+    } else {
+      const e = eventsData.find(x => String(x.id) === String(id)); if (!e) return;
+      const w = labelWaktu(e);
+      judul = e.judul; warna = warnaEvent(e); tag = 'Event Order';
+      waktu = esc(w.rentang) + (e.seharian ? '' : ' &middot; ' + esc(w.jam)) + (e.seharian ? ' &middot; Seharian' : '');
+      rows = [['PIC', esc(e.pic)], ['Departemen', e.departemen ? esc(e.departemen) : ''], ['Lokasi', e.lokasi ? esc(e.lokasi) : ''], ['Lampiran', lampTxt(e)]];
+    }
+    const r = rows.filter(x => x[1]).map(x => '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>').join('');
+    tampilPop('<button type="button" class="gc-pop-x" onclick="tutupPop()" aria-label="Tutup">&times;</button>' +
+      '<div class="gc-pop-h"><i style="background:' + warna + '"></i><div><div class="gc-pop-tag">' + tag + '</div><div class="gc-pop-t">' + esc(judul) + '</div><div class="gc-pop-s">' + waktu + '</div></div></div>' +
+      '<dl class="gc-pop-r">' + r + '</dl><div class="gc-pop-f"><button type="button" onclick="tutupPop();detailItem(\'' + kind + '\',\'' + esc(id) + '\')">Detail</button></div>', a);
+  }
+
+  function popBuat(a, ds, m, s) {
+    const info = ds ? '<div class="gc-pop-s">' + esc(hariDariYmd(ds) + ', ' + tglIndo(ds)) + (m != null ? ' &middot; ' + menitKeJam(m) + ' - ' + (s >= 1440 ? '24:00' : menitKeJam(s)) : '') + '</div>' : '';
+    const arg = ds ? "'" + ds + "'," + (m != null ? "'" + menitKeJam(m) + "','" + menitKeJam(s) + "'" : 'null,null') : 'null,null,null';
+    tampilPop('<button type="button" class="gc-pop-x" onclick="tutupPop()" aria-label="Tutup">&times;</button><div class="gc-pop-h"><div><div class="gc-pop-t">Buat baru</div>' + info + '</div></div>' +
+      '<div class="gc-pop-btns"><button type="button" onclick="buatDari(\'event\',' + arg + ')">Event Order</button><button type="button" onclick="buatDari(\'res\',' + arg + ')">Reservasi Ruangan</button></div>', a, 'gc-pop-buat');
+  }
+  function menuBuat(ev) { ev.stopPropagation(); popBuat(anchorDari(ev), null, null, null); }
+  function buatDari(jenis, ds, m, s) {
+    tutupPop(); toggleSide(false);
+    const today = ymd(new Date());
+    const tgl = ds ? (ds >= today ? ds : today) : (calSelected >= today ? calSelected : today);
+    if (jenis === 'event') {
+      bukaEvent(tgl);
+      if (m) { document.getElementById('ev-seharian').checked = false; toggleSeharian(); document.getElementById('ev-mulai').value = m; document.getElementById('ev-selesai').value = s; }
+    } else {
+      document.getElementById('tanggal').value = tgl;
+      if (m) { document.getElementById('mulai').value = m; document.getElementById('selesai').value = s; }
+      bukaReservasi();
+    }
+  }
+
+  // ---------- Pencarian ----------
+  function tanggalBerikutnya(hari) { let ds = ymd(new Date()); for (let i = 0; i < 7; i++) { if (hariDariYmd(ds) === hari) return ds; ds = tambahHari(ds, 1); } return ymd(new Date()); }
+  function cariKalender(q) {
+    const box = document.getElementById('gc-results');
+    q = String(q || '').trim().toLowerCase();
+    if (q.length < 2) { box.style.display = 'none'; return; }
+    const hasil = [];
+    eventsData.forEach(e => {
+      if ([e.judul, e.pic, e.departemen, e.lokasi, e.keterangan].join(' ').toLowerCase().includes(q))
+        hasil.push({ kind: 'event', id: e.id, judul: e.judul, tgl: e.tanggal, jam: e.seharian ? 'Seharian' : e.mulai + ' - ' + e.selesai, sub: [e.pic, e.lokasi].filter(Boolean).join(' • '), warna: warnaEvent(Object.assign({ kind: 'event' }, e)) });
+    });
+    dataLokal.forEach(j => {
+      if ([j.keperluan, j.nama, j.ruangan].join(' ').toLowerCase().includes(q)) {
+        const rutin = j.tipe === 'RUTIN';
+        hasil.push({ kind: 'booking', id: j.row, judul: j.keperluan, tgl: rutin ? tanggalBerikutnya(j.hari) : j.tanggal, jam: j.mulai + ' - ' + j.selesai, sub: [j.ruangan, j.nama, rutin ? 'Rutin ' + j.hari : ''].filter(Boolean).join(' • '), warna: roomColor(j.ruangan) });
+      }
+    });
+    const h = ymd(new Date());
+    hasil.sort((a, b) => { const fa = a.tgl >= h, fb = b.tgl >= h; if (fa !== fb) return fa ? -1 : 1; return fa ? a.tgl.localeCompare(b.tgl) : b.tgl.localeCompare(a.tgl); });
+    box.innerHTML = hasil.length ? hasil.slice(0, 10).map(r =>
+      '<button type="button" class="gc-res" onclick="bukaHasil(\'' + r.kind + '\',\'' + esc(r.id) + '\',\'' + r.tgl + '\')"><i style="background:' + r.warna + '"></i><span><b>' + esc(r.judul) + '</b><small>' + esc(tglIndo(r.tgl)) + ' &middot; ' + esc(r.jam) + '</small><small>' + esc(r.sub) + '</small></span></button>').join('') +
+      (hasil.length > 10 ? '<div class="gc-res-more">dan ' + (hasil.length - 10) + ' hasil lain, persempit pencarian</div>' : '')
+      : '<div class="gc-res-none">Tidak ada hasil untuk "' + esc(q) + '"</div>';
+    box.style.display = 'block';
+  }
+  function tutupCari() { const b = document.getElementById('gc-results'); if (b) b.style.display = 'none'; }
+  function bukaHasil(kind, id, ds) {
+    tutupCari(); document.getElementById('gc-q').value = '';
+    calSelected = ds; const p = ds.split('-'); calYear = +p[0]; calMonth = +p[1] - 1;
+    renderKalender();
+    setTimeout(() => detailItem(kind, id), 60);
+  }
+
+  // ---------- Tampilan Minggu / Hari ----------
+  function isAllDayItem(e) { return e.seharian || e.tanggal !== e.tanggalSelesai; }
+  function susunKolom(items) {
+    items.sort((a, b) => a.s - b.s || b.e - a.e);
+    const res = []; let cluster = [], clusterEnd = -1;
+    const flush = () => {
+      if (!cluster.length) return;
+      const cols = [];
+      cluster.forEach(it => { let c = cols.findIndex(end => end <= it.s); if (c < 0) { c = cols.length; cols.push(it.e); } else cols[c] = it.e; it.col = c; });
+      cluster.forEach(it => { it.cols = cols.length; });
+      res.push(...cluster); cluster = [];
+    };
+    items.forEach(it => { if (it.s >= clusterEnd) { flush(); clusterEnd = it.e; } else clusterEnd = Math.max(clusterEnd, it.e); cluster.push(it); });
+    flush();
+    return res;
+  }
+  function klikItem(e, ds) { const id = e.kind === 'booking' ? e.row : e.id; return ' onclick="event.stopPropagation();popItem(event,\'' + e.kind + '\',\'' + esc(id) + '\',\'' + ds + '\')"'; }
+
+  function renderWaktu(all) {
+    const box = document.getElementById('gc-time');
+    const days = calView === 'week' ? Array.from({ length: 7 }, (_, i) => tambahHari(awalMinggu(calSelected), i)) : [calSelected];
+    const n = days.length, hariIni = ymd(new Date()), DOW = ['SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB', 'MIN'];
+    const grid = 'grid-template-columns:56px repeat(' + n + ',minmax(0,1fr))';
+    const skrg = new Date(), nowTop = (skrg.getHours() * 60 + skrg.getMinutes()) * HOUR_H / 60;
+    let head = '<div class="tg-corner"></div>', ad = '<div class="tg-adlab"></div>', cols = '';
+    days.forEach(ds => {
+      const dt = new Date(+ds.slice(0, 4), +ds.slice(5, 7) - 1, +ds.slice(8, 10)), lb = infoLibur(ds);
+      head += '<div class="tg-dh' + (ds === hariIni ? ' today' : '') + (lb && !lb.cuti ? ' libur' : '') + (n > 1 ? ' link' : '') + '"' + (n > 1 ? ' onclick="bukaHari(\'' + ds + '\')"' : '') + '><span class="dw">' + DOW[(dt.getDay() + 6) % 7] + '</span><span class="dn">' + dt.getDate() + '</span>' + (lb ? '<small title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</small>' : '') + '</div>';
+      const its = itemPadaTanggal(all, ds);
+      ad += '<div class="tg-ad">' + its.filter(isAllDayItem).map(e => '<div class="tg-adbar" style="background:' + warnaEvent(e) + '"' + klikItem(e, ds) + ' title="' + esc(e.judul) + '">' + esc(e.judul) + '</div>').join('') + '</div>';
+      const timed = its.filter(e => !isAllDayItem(e) && e.mulai).map(e => { const s = menit(e.mulai); let en = menit(e.selesai); if (en <= s) en = s + 30; return { it: e, s: s, e: en }; });
+      const blok = susunKolom(timed).map(o => {
+        const e = o.it, hgt = Math.max(22, (o.e - o.s) * HOUR_H / 60 - 2), rm = roomOf(e.lokasi);
+        const judul = (e.kind === 'booking' && rm ? rm.short + ': ' : '') + e.judul;
+        const jam = e.mulai + ' - ' + e.selesai;
+        const isi = hgt < 36 ? '<b>' + esc(judul) + '</b> <span>' + esc(e.mulai) + '</span>' : '<b>' + esc(judul) + '</b><span>' + esc(jam) + '</span>' + (hgt >= 62 && e.lokasi && e.kind === 'event' ? '<span>' + esc(e.lokasi) + '</span>' : '') + (hgt >= 62 && e.kind === 'booking' ? '<span>' + esc(e.pic) + '</span>' : '');
+        return '<div class="tg-ev" style="top:' + (o.s * HOUR_H / 60) + 'px;height:' + hgt + 'px;left:calc(' + (o.col / o.cols * 100) + '% + 2px);width:calc(' + (100 / o.cols) + '% - 4px);background:' + warnaEvent(e) + '"' + klikItem(e, ds) + ' title="' + esc(judul + ' (' + jam + ')') + '">' + isi + '</div>';
+      }).join('');
+      cols += '<div class="tg-col' + (ds === hariIni ? ' today' : '') + '" data-ds="' + ds + '" onmousedown="tgDown(event)" onclick="tgClick(event)">' + blok + (ds === hariIni ? '<div class="tg-now" style="top:' + nowTop + 'px"><i></i></div>' : '') + '</div>';
+    });
+    let gut = '';
+    for (let h = 1; h < 24; h++) gut += '<span style="top:' + (h * HOUR_H - 7) + 'px">' + pad2(h) + ':00</span>';
+    box.innerHTML = '<div class="tg-scroll" id="tg-scroll"><div class="tg-inner" style="min-width:' + (n > 1 ? '700px' : '0') + '"><div class="tg-top"><div class="tg-head" style="' + grid + '">' + head + '</div><div class="tg-allday" style="' + grid + '">' + ad + '</div></div><div class="tg-body" style="' + grid + '"><div class="tg-gutter">' + gut + '</div>' + cols + '</div></div></div>';
+    const sc = document.getElementById('tg-scroll');
+    if (tgScroll === null) tgScroll = (days.includes(hariIni) ? Math.max(0, skrg.getHours() - 1) : 7) * HOUR_H;
+    sc.scrollTop = tgScroll;
+    sc.addEventListener('scroll', () => { tgScroll = sc.scrollTop; });
+  }
+
+  function snapY(col, clientY) { const r = col.getBoundingClientRect(); const m = Math.floor((clientY - r.top) / HOUR_H * 2) * 30; return Math.max(0, Math.min(1410, m)); }
+  function tgDown(e) {
+    if (e.button !== 0 || e.target.closest('.tg-ev')) return;
+    tutupPop();
+    tgDrag = { col: e.currentTarget, ds: e.currentTarget.dataset.ds, a: snapY(e.currentTarget, e.clientY), b: null, moved: false };
+  }
+  document.addEventListener('mousemove', e => {
+    if (!tgDrag) return;
+    tgDrag.b = snapY(tgDrag.col, e.clientY);
+    if (tgDrag.b !== tgDrag.a) tgDrag.moved = true;
+    if (!tgDrag.moved) return;
+    let sel = tgDrag.col.querySelector('.tg-sel');
+    if (!sel) { sel = document.createElement('div'); sel.className = 'tg-sel'; tgDrag.col.appendChild(sel); }
+    const s = Math.min(tgDrag.a, tgDrag.b), en = Math.max(tgDrag.a, tgDrag.b) + 30;
+    sel.style.top = (s * HOUR_H / 60) + 'px'; sel.style.height = ((en - s) * HOUR_H / 60) + 'px';
+    sel.textContent = menitKeJam(s) + ' - ' + (en >= 1440 ? '24:00' : menitKeJam(en));
+  });
+  document.addEventListener('mouseup', e => {
+    if (!tgDrag) return;
+    const d = tgDrag; tgDrag = null;
+    const sel = d.col.querySelector('.tg-sel'); if (sel) sel.remove();
+    if (d.moved) {
+      tgJust = true; setTimeout(() => { tgJust = false; }, 0);
+      popBuat({ left: e.clientX, right: e.clientX, top: e.clientY, bottom: e.clientY }, d.ds, Math.min(d.a, d.b), Math.max(d.a, d.b) + 30);
+    }
+  });
+  function tgClick(e) {
+    if (tgJust || e.target.closest('.tg-ev')) return;
+    const s = snapY(e.currentTarget, e.clientY);
+    popBuat({ left: e.clientX, right: e.clientX, top: e.clientY, bottom: e.clientY }, e.currentTarget.dataset.ds, s, s + 60);
+  }
+  setInterval(() => {
+    if (calView === 'month') return;
+    const el = document.querySelector('.tg-now'); if (!el) return;
+    const n = new Date(); el.style.top = ((n.getHours() * 60 + n.getMinutes()) * HOUR_H / 60) + 'px';
+  }, 30000);
+
+  // ---------- Pintasan keyboard & klik di luar ----------
+  document.addEventListener('mousedown', e => {
+    const p = document.getElementById('gc-pop'); if (p && !p.contains(e.target)) tutupPop();
+    if (!e.target.closest('.gc-view')) tutupViewMenu();
+    if (!e.target.closest('.gc-search')) tutupCari();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { tutupPop(); tutupViewMenu(); tutupCari(); toggleSide(false); return; }
+    const kv = document.getElementById('view-kalender');
+    if (!kv || kv.style.display === 'none') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+    if (document.querySelector('.modal-ov.show') || document.querySelector('.swal2-container')) return;
+    const k = e.key.toLowerCase();
+    if (k === 'm') setView('month');
+    else if (k === 'w') setView('week');
+    else if (k === 'd') setView('day');
+    else if (k === 't') keHariIni();
+    else if (k === 'c') { const b = document.querySelector('.header-actions .btn-add'); if (b) { e.preventDefault(); b.click(); } }
+    else if (k === '/') { e.preventDefault(); document.getElementById('gc-q').focus(); }
+    else if (k === 'arrowleft') gantiPeriode(-1);
+    else if (k === 'arrowright') gantiPeriode(1);
+  });
 
   function renderLegend() {}
 
@@ -1093,26 +1664,42 @@ window.google = { script: { run: (function () {
   function infoLibur(ds) { const x = LIBUR[ds]; return x ? { cuti: x[0] === 'C', nama: x[1] } : null; }
 
   function renderKalender() {
-    document.getElementById('cal-title').innerText = BULAN[calMonth] + ' ' + calYear;
-    document.getElementById('cal-dow').innerHTML = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'].map(h => `<div class="cal-dow">${h}</div>`).join('');
-    renderLegend();
-
     const all = semuaItemKalender();
+    renderToolbar(); renderSide();
+    const bulan = calView === 'month';
+    document.getElementById('gc-month').style.display = bulan ? '' : 'none';
+    document.getElementById('gc-time').style.display = bulan ? 'none' : '';
+    document.getElementById('cal-month-wrap').style.display = bulan ? '' : 'none';
+    document.getElementById('cal-day-wrap').style.display = bulan ? '' : 'none';
+    if (bulan) renderBulan(all); else renderWaktu(all);
+  }
+
+  function renderBulan(all) {
+    renderLegend();
     const offset = (new Date(calYear, calMonth, 1).getDay() + 6) % 7; // minggu mulai Senin
     const jmlHari = new Date(calYear, calMonth + 1, 0).getDate();
+    const tampil = true; // Sabtu & Minggu selalu tampil
+    const kolom = tampil ? 7 : 5;
+    ['cal-dow', 'cal-grid'].forEach(id => { const el = document.getElementById(id); el.classList.toggle('c5', !tampil); el.classList.toggle('c7', tampil); });
+    document.getElementById('cal-dow').innerHTML = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'].slice(0, kolom).map(h => `<div class="cal-dow">${h}</div>`).join('');
     const hariIni = ymd(new Date());
     let html = '';
-    for (let i = 0; i < offset; i++) html += '<div class="cal-cell empty"></div>';
-    for (let d = 1; d <= jmlHari; d++) {
-      const ds = calYear + '-' + pad2(calMonth + 1) + '-' + pad2(d);
+    const minggu = Math.ceil((offset + jmlHari) / 7);
+    for (let i = 0; i < minggu * 7; i++) {
+      const dow = i % 7;
+      if (!tampil && dow >= 5) continue;
+      const dt = new Date(calYear, calMonth, 1 - offset + i);
+      const ds = ymd(dt);
+      const luar = dt.getMonth() !== calMonth;
+      const d = dt.getDate();
+      const numLabel = d === 1 ? d + ' ' + BULAN_S[dt.getMonth()] : d;
       const evs = itemPadaTanggal(all, ds);
       const ev1 = evs.find(x => x.kind === 'event');
-      const dow = (offset + d - 1) % 7;
       const lb = infoLibur(ds);
-      const cls = ['cal-cell', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', dow >= 5 ? 'weekend' : '', lb ? (lb.cuti ? 'cuti' : 'libur') : '', ev1 ? 'has-ev' : ''].join(' ');
+      const cls = ['cal-cell', luar ? 'other' : '', ds === hariIni ? 'today' : '', ds === calSelected ? 'selected' : '', lb ? (lb.cuti ? 'cuti' : 'libur') : '', ev1 ? 'has-ev' : ''].join(' ');
       const chips = evs.slice().sort((a, b) => (a.kind === 'event' ? 0 : 1) - (b.kind === 'event' ? 0 : 1)).slice(0, 3).map(chipHtml).join('');
-      const extra = evs.length > 3 ? `<div class="cal-more">+${evs.length - 3} lagi</div>` : '';
-      html += `<div class="${cls}"${lb ? ' title="' + esc(lb.nama) + '"' : ''} style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${d}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
+      const extra = evs.length > 3 ? `<div class="cal-more">${evs.length - 3} lainnya</div>` : '';
+      html += `<div class="${cls}"${lb ? ' title="' + esc(lb.nama) + '"' : ''} style="--ec:${ev1 ? warnaEvent(ev1) : 'transparent'}" onclick="pilihTanggal('${ds}')"><div class="cal-num">${numLabel}</div>${lb ? '<div class="cal-libur" title="' + esc(lb.nama) + '">' + esc(lb.nama) + '</div>' : ''}<div class="cal-chips">${chips}</div>${extra}</div>`;
     }
     document.getElementById('cal-grid').innerHTML = html;
     renderAgendaHari(all);
@@ -1150,6 +1737,7 @@ window.google = { script: { run: (function () {
     const isi = evs.length ? evs.map(e => {
       const warna = warnaEvent(e);
       const jamP = e.seharian ? 'Seharian' : (e.mulai + ' - ' + e.selesai);
+      if (e.kind === 'booking') return agRow("lihatDetailDariPopup('" + e.row + "','booking')", warna, kiriJam(jamP), e.rutin ? 'Jadwal Rutin' : 'Reservasi', e.judul, subJoin(['<b>' + esc(e.lokasi) + '</b>', esc(e.pic)]), e.pic);
       return agRow("lihatDetailDariPopup('" + esc(e.id) + "')", warna, kiriJam(jamP), '', e.judul,
         subJoin([esc(e.pic), e.departemen ? esc(e.departemen) : '', e.lokasi ? esc(e.lokasi) : '', lampTxt(e)]), e.pic);
     }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
@@ -1161,9 +1749,9 @@ window.google = { script: { run: (function () {
     }).then(r => { if (r.isConfirmed) bukaEvent(ds); });
   }
 
-  function lihatDetailDariPopup(id) {
+  function lihatDetailDariPopup(id, kind) {
     Swal.close();
-    setTimeout(() => detailEvent(id), 80);
+    setTimeout(() => detailItem(kind || 'event', id), 80);
   }
 
   // Daftar event order satu bulan penuh: judul, jam, PIC, departemen, lokasi terbaca jelas (terutama di HP)
@@ -1171,7 +1759,7 @@ window.google = { script: { run: (function () {
     const box = document.getElementById('cal-month-list');
     const awal = calYear + '-' + pad2(calMonth + 1) + '-01';
     const akhir = calYear + '-' + pad2(calMonth + 1) + '-' + pad2(new Date(calYear, calMonth + 1, 0).getDate());
-    const list = all.filter(e => e.tanggal <= akhir && e.tanggalSelesai >= awal)
+    const list = all.filter(e => e.kind === 'event' && e.tanggal <= akhir && e.tanggalSelesai >= awal)
       .sort((a, b) => a.tanggal.localeCompare(b.tanggal) || (a.mulai || '').localeCompare(b.mulai || ''));
     document.getElementById('cal-month-title').innerText = 'Event Order ' + BULAN[calMonth] + ' ' + calYear + (list.length ? ' (' + list.length + ')' : '');
     if (!list.length) { box.innerHTML = '<div class="text-center p-4 text-muted small">Belum ada event order di bulan ini.</div>'; return; }
