@@ -578,9 +578,166 @@ window.google = { script: { run: (function () {
       .ag2-dh b { font-size: 1.25rem; }
       .ag2-row { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 6px 6px; }
     }
+
+    .dp-list { padding: 6px 14px 8px; max-height: 50vh; overflow-y: auto; text-align: left; }
+    .dp-row { border-bottom: 1px solid #eef2f6; border-radius: 0; padding: 12px 8px; grid-template-columns: 118px minmax(0, 1fr); }
+    .dp-row:last-child { border-bottom: 0; }
+    .dp-wrap .swal2-actions { margin: 10px 0 0; gap: 8px; }
+    @media (max-width: 576px) { .dp-row { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+    /* --- Bentrok & ruangan kosong --- */
+    #res-info { margin: -6px 0 14px; font-size: .8rem; }
+    .ri-warn { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
+    .ri-warn ul { margin: 6px 0 0; padding-left: 18px; }
+    .ri-warn em { font-style: normal; font-size: .7rem; background: #fee2e2; border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
+    .ri-ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; border-radius: 12px; padding: 8px 14px; margin-bottom: 8px; font-weight: 600; }
+    .ri-free { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: #64748b; }
+    .ri-free > span { margin-right: 4px; }
+    .ri-free em { font-style: normal; color: #991b1b; font-weight: 600; }
+    .ri-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; background: #fff; border-radius: 20px; padding: 4px 12px; font-size: .75rem; font-weight: 600; color: #334155; cursor: pointer; }
+    .ri-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+    .ri-chip:hover { border-color: var(--c); }
+
+    /* --- Aksi di popup detail --- */
+    .dp-act { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 24px 2px; }
+    .dp-act button { border: 1px solid #dadce0; background: #fff; color: #183E3A; border-radius: 20px; padding: 7px 14px; font-size: .78rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .dp-act button:hover { background: #f1f3f4; border-color: #183E3A; }
+
+    /* --- Tombol tema & cetak --- */
+    .theme-btn { position: fixed; top: 14px; right: 16px; z-index: 1000; width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(198,253,196,.45); background: rgba(255,255,255,.1); color: #C6FDC4; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+    .theme-btn:hover { background: rgba(255,255,255,.22); }
+    .theme-btn .i-sun { display: none; } .theme-btn.dark .i-sun { display: block; } .theme-btn.dark .i-moon { display: none; }
+    .gc-print { border: 1px solid #dadce0; background: #fff; color: #5f6368; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+    .gc-print:hover { background: #f1f3f4; }
+    .print-head { display: none; }
+    .btn-ghost { background: transparent !important; color: var(--primary-emerald) !important; border: 2px solid var(--primary-emerald) !important; box-shadow: none !important; }
+
+    /* --- Layar ruangan --- */
+    #kiosk { display: none; position: fixed; inset: 0; z-index: 4000; background: #0b1f1c; color: #e8fff0; padding: 3vh 3vw; overflow: auto; flex-direction: column; font-family: 'Poppins', sans-serif; }
+    #kiosk.show { display: flex; }
+    .ks-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 3vh; flex-wrap: wrap; }
+    .ks-title { font-size: clamp(1.2rem, 2.4vw, 2.2rem); font-weight: 700; color: #C6FDC4; }
+    .ks-btns { display: flex; gap: 8px; margin-top: 10px; }
+    .ks-btns button { background: transparent; border: 1px solid rgba(198,253,196,.4); color: #C6FDC4; border-radius: 20px; padding: 5px 14px; font-size: .75rem; cursor: pointer; font-family: inherit; opacity: .8; }
+    .ks-btns button:hover { opacity: 1; background: rgba(198,253,196,.1); }
+    .ks-clock { text-align: right; }
+    .ks-time { font-size: clamp(2.2rem, 5.4vw, 5rem); font-weight: 700; line-height: 1; }
+    .ks-date { font-size: clamp(.9rem, 1.5vw, 1.4rem); color: #9fd8ae; margin-top: 6px; }
+    .ks-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 2vw; align-content: start; }
+    .ks-card { background: #12302b; border-radius: 24px; padding: clamp(16px, 2vw, 32px); border-top: 10px solid var(--c); display: flex; flex-direction: column; gap: 1.4vh; }
+    .ks-name { font-size: clamp(1.1rem, 2vw, 1.9rem); font-weight: 700; }
+    .ks-status { align-self: flex-start; font-size: clamp(1.2rem, 2.6vw, 2.4rem); font-weight: 800; letter-spacing: .06em; border-radius: 14px; padding: 4px 20px; }
+    .ks-status.busy { background: #ef4444; color: #fff; }
+    .ks-status.free { background: #22c55e; color: #052e16; }
+    .ks-now b { display: block; font-size: clamp(1.1rem, 1.9vw, 1.8rem); line-height: 1.25; }
+    .ks-now span { font-size: clamp(.85rem, 1.2vw, 1.15rem); color: #9fd8ae; }
+    .ks-next { border-top: 1px solid rgba(198,253,196,.2); padding-top: 1.2vh; font-size: clamp(.8rem, 1.1vw, 1.05rem); color: #cfe9d6; }
+    .ks-next em { display: block; font-style: normal; font-size: .7em; letter-spacing: .1em; text-transform: uppercase; color: #7fb694; margin-bottom: 4px; }
+    .ks-next b { color: #C6FDC4; margin-right: 6px; }
+    .ks-load { grid-column: 1 / -1; text-align: center; padding: 8vh 0; font-size: 1.4rem; color: #9fd8ae; }
+
+    /* --- Mode gelap --- */
+    html[data-theme="dark"] { color-scheme: dark; }
+    html[data-theme="dark"] body { background-color: #0d1816; color: #e3ece9; }
+    html[data-theme="dark"] .leaf-decoration { opacity: .25; }
+    html[data-theme="dark"] .card, html[data-theme="dark"] .modal-box, html[data-theme="dark"] .rs-card, html[data-theme="dark"] .item-j,
+    html[data-theme="dark"] .swal2-popup, html[data-theme="dark"] .gc-pop, html[data-theme="dark"] .gc-results, html[data-theme="dark"] .gc-viewmenu { background: #16231f; color: #e3ece9; }
+    html[data-theme="dark"] .item-j { border-color: #243630; }
+    html[data-theme="dark"] .swal2-title, html[data-theme="dark"] .swal2-html-container { color: #e3ece9; }
+    html[data-theme="dark"] .judul-sec { color: #C6FDC4; border-bottom-color: #2d5a50; }
+    html[data-theme="dark"] .form-control, html[data-theme="dark"] .form-select, html[data-theme="dark"] .search-box, html[data-theme="dark"] .tags-input-container { background: #0f1b18; border-color: #2b3f3a; color: #e3ece9; }
+    html[data-theme="dark"] .tags-input-container input { color: #e3ece9; }
+    html[data-theme="dark"] ::placeholder { color: #7f948f !important; }
+    html[data-theme="dark"] .menu-btn { background: rgba(22,35,31,.8); color: #C6FDC4; border-color: #2d5a50; }
+    html[data-theme="dark"] .menu-btn.active { background: #C6FDC4; color: #0f2623; }
+    html[data-theme="dark"] .nav-tabs-custom { background: #101c19; }
+    html[data-theme="dark"] .tab-btn { color: #9fb3ad; }
+    html[data-theme="dark"] .tab-btn.active { background: #1f322d; color: #C6FDC4; }
+    html[data-theme="dark"] .btn-add, html[data-theme="dark"] .btn-save, html[data-theme="dark"] .gc-create { background: #C6FDC4; color: #0f2623; }
+    html[data-theme="dark"] .btn-ghost { color: #C6FDC4 !important; border-color: #C6FDC4 !important; }
+    html[data-theme="dark"] .btn-refresh { background: #1f322d; color: #C6FDC4; }
+    html[data-theme="dark"] .page-btn { color: #C6FDC4; border-color: #2d5a50; }
+    html[data-theme="dark"] .user-desc, html[data-theme="dark"] .rs-info, html[data-theme="dark"] .service-title, html[data-theme="dark"] .text-muted { color: #9fb3ad !important; }
+    html[data-theme="dark"] .service-name { color: #C6FDC4; }
+    html[data-theme="dark"] .footer-service { background: rgba(255,255,255,.03); }
+    html[data-theme="dark"] .status-ongoing { background: #2a1618 !important; }
+    html[data-theme="dark"] .status-selesai { background: #121c19 !important; }
+    html[data-theme="dark"] .rs-free { background: #14532d; color: #bbf7d0; }
+    html[data-theme="dark"] .modal-x { color: #9fb3ad; }
+    html[data-theme="dark"] .room-chip { background: #0f1b18; color: #e3ece9; }
+    html[data-theme="dark"] .dur-chip { background: #0f1b18; color: #e3ece9; border-color: #2b3f3a; }
+    /* kalender */
+    html[data-theme="dark"] #cal-grid .cal-cell { background: #16231f; border-color: #2d413c; }
+    html[data-theme="dark"] #cal-grid .cal-cell:hover { background: #1b2c27; }
+    html[data-theme="dark"] #cal-grid .cal-cell.selected { background: #1d352e; }
+    html[data-theme="dark"] #cal-grid .cal-cell.empty, html[data-theme="dark"] #cal-grid .cal-cell.empty:hover { background: #16231f; }
+    html[data-theme="dark"] .cal-num { color: #dfe9e6; }
+    html[data-theme="dark"] #cal-grid .cal-cell.other .cal-num { color: #7f948f; }
+    html[data-theme="dark"] #cal-grid .cal-cell.libur .cal-num { color: #f87171; }
+    html[data-theme="dark"] #cal-grid .cal-cell.cuti .cal-num { color: #fbbf24; }
+    html[data-theme="dark"] #cal-grid .cal-cell.today .cal-num { color: #fff; }
+    html[data-theme="dark"] .cal-chip.gc { color: #dfe9e6 !important; }
+    html[data-theme="dark"] .cal-chip.gc:hover, html[data-theme="dark"] .cal-more:hover { background: #24382f !important; }
+    html[data-theme="dark"] .cal-more { color: #dfe9e6; }
+    html[data-theme="dark"] .cal-dow, html[data-theme="dark"] .libur-leg { color: #8aa09a; }
+    html[data-theme="dark"] .cal-title { color: #e3ece9; }
+    html[data-theme="dark"] .cal-today-btn, html[data-theme="dark"] .gc-view > button, html[data-theme="dark"] .gc-print, html[data-theme="dark"] .gc-search input { background: #16231f; border-color: #2d413c; color: #e3ece9; }
+    html[data-theme="dark"] .cal-nav-btn, html[data-theme="dark"] .gc-burger { color: #cfe0db; }
+    html[data-theme="dark"] .cal-today-btn:hover, html[data-theme="dark"] .cal-nav-btn:hover, html[data-theme="dark"] .gc-view > button:hover, html[data-theme="dark"] .gc-print:hover { background: #1f322d; }
+    html[data-theme="dark"] .gc-mini-h, html[data-theme="dark"] .gc-chk, html[data-theme="dark"] .gc-mini-g button { color: #dfe9e6; }
+    html[data-theme="dark"] .gc-mini-g button.o { color: #6b807a; }
+    html[data-theme="dark"] .gc-mini-g button:hover, html[data-theme="dark"] .gc-mini-h button:hover { background: #1f322d; }
+    html[data-theme="dark"] .gc-mini-g button.r, html[data-theme="dark"] .gc-mini-g button.s { background: #1d352e; }
+    html[data-theme="dark"] .gc-mini-g button.t { background: #1a73e8; }
+    html[data-theme="dark"] .gc-sec, html[data-theme="dark"] .gc-mini-g b { color: #8aa09a; }
+    html[data-theme="dark"] .gc-chk i { background-color: #16231f; }
+    html[data-theme="dark"] .gc-chk input:checked + i { background-color: var(--c); }
+    html[data-theme="dark"] .gc-viewmenu button, html[data-theme="dark"] .gc-res b { color: #e3ece9; }
+    html[data-theme="dark"] .gc-viewmenu button:hover, html[data-theme="dark"] .gc-res:hover { background: #1f322d; }
+    html[data-theme="dark"] .gc-res small { color: #9fb3ad; }
+    html[data-theme="dark"] .tg-scroll { border-color: #2d413c; }
+    html[data-theme="dark"] .tg-top { background: #16231f; }
+    html[data-theme="dark"] .tg-col { background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 47px, #2a3d38 47px, #2a3d38 48px); border-left-color: #2d413c; }
+    html[data-theme="dark"] .tg-dh, html[data-theme="dark"] .tg-ad { border-color: #2d413c; }
+    html[data-theme="dark"] .tg-corner, html[data-theme="dark"] .tg-adlab { border-color: #2d413c; }
+    html[data-theme="dark"] .tg-dh .dn { color: #dfe9e6; }
+    html[data-theme="dark"] .tg-dh.today .dn { color: #fff; }
+    html[data-theme="dark"] .tg-dh.libur .dn { color: #f87171; }
+    html[data-theme="dark"] .tg-dh.link:hover .dn { background: #1f322d; }
+    html[data-theme="dark"] .tg-gutter span { color: #8aa09a; }
+    html[data-theme="dark"] .ag2-day, html[data-theme="dark"] .ag2-empty, html[data-theme="dark"] .dp-row, html[data-theme="dark"] .dp-rows > div { border-color: #2a3d38; }
+    html[data-theme="dark"] .ag2-dh b, html[data-theme="dark"] .ag2-b b, html[data-theme="dark"] .ag2-t, html[data-theme="dark"] .dp-rows dd, html[data-theme="dark"] .gc-pop-t, html[data-theme="dark"] .gc-pop-r dd { color: #e3ece9; }
+    html[data-theme="dark"] .ag2-b small, html[data-theme="dark"] .ag2-dh span, html[data-theme="dark"] .gc-pop-s, html[data-theme="dark"] .ag2-empty { color: #9fb3ad; }
+    html[data-theme="dark"] .ag2-day.today .ag2-dh b, html[data-theme="dark"] .ag2-day.today .ag2-dh span { color: #60a5fa; }
+    html[data-theme="dark"] .ag2-row:hover { background: #1d2f2a; }
+    html[data-theme="dark"] .ag2-sd { background: #243630; color: #cfe0db; }
+    html[data-theme="dark"] .dp-act button, html[data-theme="dark"] .gc-pop-btns button, html[data-theme="dark"] .ri-chip { background: #0f1b18; color: #C6FDC4; border-color: #2d5a50; }
+    html[data-theme="dark"] .ri-warn { background: #3b1618; color: #fecaca; border-color: #7f1d1d; }
+    html[data-theme="dark"] .ri-warn em { background: #5b1f22; }
+    html[data-theme="dark"] .ri-ok { background: #0f2f22; color: #bbf7d0; border-color: #14532d; }
+    html[data-theme="dark"] .ri-free { color: #9fb3ad; }
+
+    /* --- Cetak --- */
+    @media print {
+      @page { size: landscape; margin: 10mm; }
+      html, body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .nav-top, .main-menu, .leaf-decoration, .leaf-container, #view-reservasi, #view-kalender .header-section, .gc-side, .gc-backdrop,
+      .gc-burger, .cal-today-btn, .cal-nav-btn, .gc-search, .gc-view, .gc-print, .gc-pop, .footer-service, .modal-ov, .theme-btn, #kiosk { display: none !important; }
+      #view-kalender { display: block !important; padding: 0 !important; }
+      .card { box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; }
+      .gc-layout { display: block; }
+      .tg-scroll { max-height: none !important; overflow: visible !important; }
+      .tg-top { position: static; }
+      .print-head { display: flex !important; justify-content: space-between; align-items: baseline; margin-bottom: 8px; border-bottom: 2px solid #183E3A; padding-bottom: 6px; }
+      .print-head b { font-size: 16pt; color: #183E3A; }
+      .print-head span { font-size: 9pt; color: #555; }
+      #cal-grid .cal-cell { min-height: 80px; }
+      .ag2-row, .ag2-day { break-inside: avoid; }
+      .gc-toolbar .cal-title { display: none; }
+    }
 </style>
 </head>
-<body onload="muatDataInit()">
+<body onload="muatDataInit(); bacaHash();">
 
 <datalist id="listNama"></datalist>
 <datalist id="listEmail"></datalist>
@@ -601,6 +758,8 @@ window.google = { script: { run: (function () {
 </div>
 
 <div class="nav-top">Meeting Room 23 Semarang</div>
+<button type="button" class="theme-btn" id="btn-theme" onclick="toggleTema()" title="Mode gelap" aria-label="Mode gelap"><svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+<div id="kiosk"><div class="ks-top"><div><div class="ks-title">Meeting Room 23 Semarang</div><div class="ks-btns"><button type="button" onclick="layarPenuh()">Layar penuh</button><button type="button" onclick="tutupKiosk()">Tutup</button></div></div><div class="ks-clock"><div class="ks-time" id="ks-time"></div><div class="ks-date" id="ks-date"></div></div></div><div class="ks-grid" id="ks-grid"></div></div>
 
 <div class="main-menu">
   <button type="button" class="menu-btn active" id="menu-reservasi" onclick="showView('reservasi')">Reservasi Ruangan</button>
@@ -616,6 +775,7 @@ window.google = { script: { run: (function () {
       <div class="judul-sec">Dashboard Jadwal</div>
       <div class="header-actions">
         <button type="button" class="btn-add" onclick="bukaReservasi()">+ Reservasi</button>
+        <button type="button" class="btn-add btn-ghost" onclick="bukaKiosk()">Layar Ruangan</button>
         <button type="button" class="btn-refresh" id="btn-refresh" onclick="refreshManual()" title="Refresh Data" aria-label="Refresh Data"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
       </div>
     </div>
@@ -652,6 +812,7 @@ window.google = { script: { run: (function () {
       </div>
     </div>
 
+    <div class="print-head"><b id="print-judul"></b><span id="print-tgl"></span></div>
     <div class="gc-layout">
       <aside class="gc-side" id="gc-side">
         <button type="button" class="gc-create" onclick="menuBuat(event)"><span>+</span> Buat</button>
@@ -678,6 +839,7 @@ window.google = { script: { run: (function () {
             <input type="text" id="gc-q" placeholder="Cari agenda, PIC, ruangan..." autocomplete="off" oninput="cariKalender(this.value)" onfocus="cariKalender(this.value)">
             <div class="gc-results" id="gc-results"></div>
           </div>
+          <button type="button" class="gc-print" onclick="cetakKalender()" title="Cetak / PDF" aria-label="Cetak"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="7"/><path d="M6 17H4a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/></svg></button>
           <div class="gc-view">
             <button type="button" id="gc-viewbtn" onclick="toggleViewMenu(event)">Bulan &#9662;</button>
             <div class="gc-viewmenu" id="gc-viewmenu">
@@ -766,6 +928,7 @@ window.google = { script: { run: (function () {
         <button type="button" class="dur-chip" onclick="setDurasi('res',120)">2 jam</button>
         <button type="button" class="dur-chip" onclick="setDurasi('res',180)">3 jam</button>
       </div>
+      <div id="res-info"></div>
 
       <div class="mb-3">
         <input type="text" id="keperluan" class="form-control" placeholder="Agenda / Keperluan *">
@@ -911,6 +1074,7 @@ window.google = { script: { run: (function () {
   function bukaModal(id) {
     document.getElementById('modal-' + id).classList.add('show');
     document.body.style.overflow = 'hidden';
+    setTimeout(renderResInfo, 50);
   }
   function tutupModal(id) {
     document.getElementById('modal-' + id).classList.remove('show');
@@ -1025,6 +1189,7 @@ window.google = { script: { run: (function () {
     filterJadwal();
     renderStatusRuangan();
     renderKalender();
+    tryHash();
   }
 
   function muatData() {
@@ -1168,10 +1333,11 @@ window.google = { script: { run: (function () {
 
   function showDetail(index) { showDetailObj(dataFiltered[index]); }
 
-  function popupDetail(warna, tag, judul, waktu, rows) {
+  function popupDetail(warna, tag, judul, waktu, rows, aksi) {
+    dpAksi = aksi || null;
     const r = rows.filter(x => x[1]).map(x => '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>').join('');
     Swal.fire({
-      html: '<div class="dp"><div class="dp-head" style="--c:' + warna + '"><span class="dp-tag">' + tag + '</span><h3>' + esc(judul) + '</h3><div class="dp-time">' + waktu + '</div></div><dl class="dp-rows">' + r + '</dl></div>',
+      html: '<div class="dp"><div class="dp-head" style="--c:' + warna + '"><span class="dp-tag">' + tag + '</span><h3>' + esc(judul) + '</h3><div class="dp-time">' + waktu + '</div></div><dl class="dp-rows">' + r + '</dl>' + (aksi ? aksiHtml() : '') + '</div>',
       customClass: { popup: 'dp-wrap' }, width: 'min(520px, 95vw)',
       showCloseButton: true, showConfirmButton: false, showCancelButton: true, cancelButtonText: 'Tutup'
     });
@@ -1180,7 +1346,8 @@ window.google = { script: { run: (function () {
     if (!j) return;
     popupDetail(roomColor(j.ruangan), j.tipe === 'RUTIN' ? 'Jadwal Rutin' : 'Reservasi', j.keperluan,
       esc(j.hari) + ', ' + (/^\d{4}-\d{2}-\d{2}$/.test(j.tanggal) ? esc(tglIndo(j.tanggal)) : esc(j.tanggal)) + ' &nbsp;|&nbsp; ' + esc(j.mulai) + ' - ' + esc(j.selesai),
-      [['Ruangan', esc(j.ruangan)], ['Pemesan', esc(j.nama)], ['Agenda', esc(j.keperluan)]]);
+      [['Ruangan', esc(j.ruangan)], ['Pemesan', esc(j.nama)], ['Agenda', esc(j.keperluan)]],
+      aksiBooking(j));
   }
 
   // =====================================================
@@ -1193,6 +1360,7 @@ window.google = { script: { run: (function () {
   }
 
   function pilihRuangan(nama) {
+    setTimeout(renderResInfo, 0);
     document.getElementById('ruangan').value = nama || '';
     document.querySelectorAll('#room-chips .room-chip').forEach(c => c.classList.toggle('active', c.dataset.room === nama));
   }
@@ -1215,6 +1383,7 @@ window.google = { script: { run: (function () {
 
   // Isi jam selesai otomatis dari jam mulai + durasi (p: 'res' atau 'ev')
   function setDurasi(p, mnt) {
+    setTimeout(renderResInfo, 0);
     const mi = document.getElementById(p === 'res' ? 'mulai' : 'ev-mulai');
     const se = document.getElementById(p === 'res' ? 'selesai' : 'ev-selesai');
     if (!mi.value) mi.value = '09:00';
@@ -1242,6 +1411,8 @@ window.google = { script: { run: (function () {
       return Swal.fire({ icon: 'warning', title: 'Data Belum Lengkap', text: 'Mohon isi semua kolom wajib, termasuk ruangan dan Email Pemesan yang valid.' });
     }
     if (f.selesai <= f.mulai) return Swal.fire('Waktu Salah', 'Jam selesai harus lebih besar dari jam mulai.', 'error');
+    const bt = bentrokRuang(f.ruangan, f.tanggal, menit(f.mulai), menit(f.selesai));
+    if (bt.length) return Swal.fire({ icon: 'error', title: 'Jadwal Bentrok', html: '<div style="text-align:left;font-size:.9rem">' + esc(f.ruangan) + ' sudah terpakai:<br>' + bt.map(x => '&bull; ' + esc(x.jam) + ' &middot; ' + esc(x.judul) + ' (' + esc(x.oleh) + ')').join('<br>') + '<br><br>Pilih jam atau ruangan lain.</div>' });
 
     btn.disabled = true; btn.innerText = 'MEMERIKSA JADWAL...';
     google.script.run.withSuccessHandler(res => {
@@ -1279,7 +1450,9 @@ window.google = { script: { run: (function () {
   function muatEvents() {
     google.script.run.withSuccessHandler(data => {
       eventsData = data || [];
+      eventsSiap = true;
       renderKalender();
+      tryHash();
     }).getEvents();
   }
 
@@ -1647,7 +1820,7 @@ window.google = { script: { run: (function () {
     if (!e.target.closest('.gc-search')) tutupCari();
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { tutupPop(); tutupViewMenu(); tutupCari(); toggleSide(false); return; }
+    if (e.key === 'Escape') { if (kioskOn) { tutupKiosk(); return; } tutupPop(); tutupViewMenu(); tutupCari(); toggleSide(false); return; }
     const kv = document.getElementById('view-kalender');
     if (!kv || kv.style.display === 'none') return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -1758,15 +1931,17 @@ window.google = { script: { run: (function () {
     const judul = hariDariYmd(ds) + ', ' + parseInt(p[2], 10) + ' ' + BULAN[parseInt(p[1], 10) - 1] + ' ' + p[0];
     const isi = evs.length ? evs.map(e => {
       const warna = warnaEvent(e);
-      const jamP = e.seharian ? 'Seharian' : (e.mulai + ' - ' + e.selesai);
-      if (e.kind === 'booking') return agRow("lihatDetailDariPopup('" + e.row + "','booking')", warna, kiriJam(jamP), e.rutin ? 'Jadwal Rutin' : 'Reservasi', e.judul, subJoin(['<b>' + esc(e.lokasi) + '</b>', esc(e.pic)]), e.pic);
-      return agRow("lihatDetailDariPopup('" + esc(e.id) + "')", warna, kiriJam(jamP), '', e.judul,
-        subJoin([esc(e.pic), e.departemen ? esc(e.departemen) : '', e.lokasi ? esc(e.lokasi) : '', lampTxt(e)]), e.pic);
-    }).join('') : '<div class="text-center p-4 text-muted small">Belum ada event order di tanggal ini.</div>';
+      const jam = e.seharian ? 'Seharian' : (e.mulai + ' - ' + e.selesai);
+      if (e.kind === 'booking') {
+        return '<div class="ag2-row dp-row" style="--c:' + warna + '" onclick="lihatDetailDariPopup(\'' + e.row + '\',\'booking\')"><div class="ag2-t">' + esc(jam) + '</div><div class="ag2-b"><b>' + esc(e.judul) + '</b><small>' + subJoin([esc(e.lokasi), esc(e.pic), e.rutin ? 'Rutin' : '']) + '</small></div></div>';
+      }
+      const meta = subJoin([esc(e.pic), e.departemen ? esc(e.departemen) : '', e.lokasi ? esc(e.lokasi) : '', lampTxt(e)]);
+      const sd = e.tanggal !== e.tanggalSelesai ? ' <span class="ag2-sd">s/d ' + esc(tglIndo(e.tanggalSelesai)) + '</span>' : '';
+      return '<div class="ag2-row dp-row" style="--c:' + warna + '" onclick="lihatDetailDariPopup(\'' + esc(e.id) + '\')"><div class="ag2-t">' + esc(jam) + '</div><div class="ag2-b"><b>' + esc(e.judul) + sd + '</b><small>' + meta + '</small></div></div>';
+    }).join('') : '<div class="ag2-empty" style="border:0">Belum ada event order di tanggal ini.</div>';
     Swal.fire({
-      title: '<span style="font-size:1.05rem; font-weight:700; color:#183E3A">' + judul + '</span>',
-      html: '<div style="text-align:left; max-height:55vh; overflow-y:auto; padding:2px">' + isi + '</div>',
-      width: 'min(560px, 95vw)', showCloseButton: true, showCancelButton: true,
+      html: '<div class="dp"><div class="dp-head" style="--c:#183E3A"><span class="dp-tag">Agenda</span><h3>' + judul + '</h3><div class="dp-time">' + (evs.length ? evs.length + ' agenda' : 'Belum ada agenda') + '</div></div><div class="dp-list">' + isi + '</div></div>',
+      customClass: { popup: 'dp-wrap' }, width: 'min(560px, 95vw)', showCloseButton: true, showCancelButton: true,
       confirmButtonText: '+ Tambah Event Order', cancelButtonText: 'Tutup', reverseButtons: true
     }).then(r => { if (r.isConfirmed) bukaEvent(ds); });
   }
@@ -1925,8 +2100,200 @@ window.google = { script: { run: (function () {
     const w = labelWaktu(e);
     const lamp = (e.lampiran || []).map((l, i) => '<a href="#" class="lamp" onclick="bukaLampiran(\'' + esc(e.id) + '\',' + i + '); return false;">' + esc(l.nama) + '</a>').join('<br>');
     popupDetail(warnaEvent(e), 'Event Order', e.judul, esc(w.rentang) + ' &nbsp;|&nbsp; ' + esc(w.jam),
-      [['PIC', esc(e.pic)], ['Departemen', e.departemen ? esc(e.departemen) : ''], ['Lokasi', e.lokasi ? esc(e.lokasi) : ''], ['Lampiran', lamp], ['Keterangan', e.keterangan ? esc(e.keterangan).replace(/\n/g, '<br>') : '']]);
+      [['PIC', esc(e.pic)], ['Departemen', e.departemen ? esc(e.departemen) : ''], ['Lokasi', e.lokasi ? esc(e.lokasi) : ''], ['Lampiran', lamp], ['Keterangan', e.keterangan ? esc(e.keterangan).replace(/\n/g, '<br>') : '']],
+      { kunci: 'e=' + encodeURIComponent(e.id), judul: e.judul, ds: e.tanggal, dsSelesai: e.tanggalSelesai, mulai: e.mulai, selesai: e.selesai, seharian: !!e.seharian,
+        lokasi: e.lokasi || '', detail: 'PIC: ' + (e.pic || '-') + (e.keterangan ? '\n' + e.keterangan : ''), waktuTeks: w.rentang + ', ' + w.jam });
   }
+
+  // =====================================================
+  // FITUR TAMBAHAN: bentrok jadwal, ruangan kosong, tambah ke kalender, tautan, cetak, tema, layar ruangan
+  // =====================================================
+  function toast(msg, icon) { Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2200 }).fire({ icon: icon || 'success', title: msg }); }
+
+  // ---------- Bentrok jadwal & ruangan kosong ----------
+  function bentrokRuang(namaRuang, ds, m, s) {
+    const r = roomOf(namaRuang); if (!r || !ds) return [];
+    const hasil = [];
+    const hari = hariDariYmd(ds);
+    dataLokal.forEach(j => {
+      if (!String(j.ruangan || '').toUpperCase().includes(r.key)) return;
+      const cocok = (j.tipe === 'RUTIN') ? j.hari === hari : j.tanggal === ds;
+      if (cocok && menit(j.mulai) < s && m < menit(j.selesai)) hasil.push({ jam: j.mulai + ' - ' + j.selesai, judul: j.keperluan, oleh: j.nama, tag: j.tipe === 'RUTIN' ? 'Jadwal rutin' : 'Reservasi' });
+    });
+    eventsData.forEach(e => {
+      const rr = roomOf(e.lokasi);
+      if (!rr || rr.key !== r.key || e.tanggal > ds || e.tanggalSelesai < ds) return;
+      const penuh = e.seharian || e.tanggal !== e.tanggalSelesai;
+      if (penuh || (menit(e.mulai) < s && m < menit(e.selesai))) hasil.push({ jam: penuh ? 'Seharian' : e.mulai + ' - ' + e.selesai, judul: e.judul, oleh: e.pic, tag: 'Event Order' });
+    });
+    return hasil;
+  }
+  function renderResInfo() {
+    const box = document.getElementById('res-info'); if (!box) return;
+    const ds = document.getElementById('tanggal').value, a = document.getElementById('mulai').value, b = document.getElementById('selesai').value;
+    const room = document.getElementById('ruangan').value;
+    if (!ds || !a || !b || b <= a) { box.innerHTML = ''; return; }
+    const m = menit(a), s = menit(b);
+    let h = '';
+    if (room) {
+      const bt = bentrokRuang(room, ds, m, s);
+      if (bt.length) h += '<div class="ri-warn"><b>Bentrok jadwal.</b> ' + esc(room) + ' sudah terpakai:<ul>' + bt.map(x => '<li>' + esc(x.jam) + ' &middot; ' + esc(x.judul) + ' (' + esc(x.oleh) + ') <em>' + esc(x.tag) + '</em></li>').join('') + '</ul></div>';
+      else h += '<div class="ri-ok">' + esc(room) + ' tersedia pada waktu ini.</div>';
+    }
+    const kosong = ROOMS.filter(r => !bentrokRuang(r.name, ds, m, s).length);
+    h += '<div class="ri-free"><span>Ruangan kosong pada waktu ini:</span>' + (kosong.length
+      ? kosong.map(r => '<button type="button" class="ri-chip" style="--c:' + r.color + '" onclick="pilihRuangan(\'' + esc(r.name) + '\')"><i></i>' + esc(r.short) + '</button>').join('')
+      : '<em>semua ruangan terpakai</em>') + '</div>';
+    box.innerHTML = h;
+  }
+  ['tanggal', 'mulai', 'selesai'].forEach(id => { const el = document.getElementById(id); if (el) { el.addEventListener('input', renderResInfo); el.addEventListener('change', renderResInfo); } });
+
+  // ---------- Tambah ke Google Kalender, tautan, WhatsApp ----------
+  let dpAksi = null;
+  function kunciBooking(j) { return (j.row !== null && j.row !== undefined && j.row !== '') ? String(j.row) : 'R~' + j.ruangan + '~' + j.hari + '~' + j.mulai; }
+  function aksiBooking(j) {
+    let ds = /^\d{4}-\d{2}-\d{2}$/.test(j.tanggal) ? j.tanggal : null;
+    if (!ds) { ds = ymd(new Date()); for (let i = 0; i < 7 && hariDariYmd(ds) !== j.hari; i++) ds = tambahHari(ds, 1); }
+    return { kunci: 'b=' + encodeURIComponent(kunciBooking(j)), judul: j.keperluan, ds: ds, mulai: j.mulai, selesai: j.selesai, seharian: false, rutin: j.tipe === 'RUTIN',
+      lokasi: j.ruangan, detail: 'Pemesan: ' + j.nama, waktuTeks: tglIndo(ds) + ', ' + j.mulai + ' - ' + j.selesai };
+  }
+  function tglJam(ds, jam) { return ds.replace(/-/g, '') + 'T' + String(jam).replace(':', '') + '00'; }
+  function urlGCal(a) {
+    let dates;
+    if (a.seharian) dates = a.ds.replace(/-/g, '') + '/' + tambahHari(a.dsSelesai || a.ds, 1).replace(/-/g, '');
+    else dates = tglJam(a.ds, a.mulai) + '/' + tglJam(a.dsSelesai || a.ds, a.selesai);
+    let u = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(a.judul) + '&dates=' + dates + '&ctz=Asia%2FJakarta' +
+      '&details=' + encodeURIComponent(a.detail || '') + '&location=' + encodeURIComponent(a.lokasi || '');
+    if (a.rutin) u += '&recur=' + encodeURIComponent('RRULE:FREQ=WEEKLY');
+    return u;
+  }
+  function urlBagikan(a) { return location.href.split('#')[0] + '#' + a.kunci; }
+  function aksiKalender() { if (dpAksi) window.open(urlGCal(dpAksi), '_blank', 'noopener'); }
+  function aksiSalin() {
+    if (!dpAksi) return;
+    const u = urlBagikan(dpAksi);
+    const ok = () => toast('Tautan disalin');
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(ok, () => salinManual(u, ok));
+    else salinManual(u, ok);
+  }
+  function salinManual(u, ok) {
+    const t = document.createElement('textarea'); t.value = u; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); ok(); } catch (e) { prompt('Salin tautan ini:', u); }
+    t.remove();
+  }
+  function aksiWA() {
+    if (!dpAksi) return;
+    const a = dpAksi;
+    const teks = a.judul + '\n' + a.waktuTeks + (a.lokasi ? '\n' + a.lokasi : '') + '\n' + urlBagikan(a);
+    window.open('https://wa.me/?text=' + encodeURIComponent(teks), '_blank', 'noopener');
+  }
+  function aksiHtml() {
+    return '<div class="dp-act"><button type="button" onclick="aksiKalender()">Tambah ke Google Kalender</button><button type="button" onclick="aksiSalin()">Salin tautan</button><button type="button" onclick="aksiWA()">WhatsApp</button></div>';
+  }
+
+  // ---------- Buka dari tautan (#e=ID atau #b=ROW) & layar ruangan (#kiosk) ----------
+  let pendingHash = null, eventsSiap = false;
+  function bacaHash() {
+    const h = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    if (h === 'kiosk') { bukaKiosk(); return; }
+    const m = h.match(/^(e|b)=(.+)$/);
+    pendingHash = m ? { t: m[1], id: m[2] } : null;
+    tryHash();
+  }
+  function tryHash() {
+    if (!pendingHash) return;
+    const ph = pendingHash;
+    if (ph.t === 'e') {
+      const e = eventsData.find(x => String(x.id) === ph.id);
+      if (e) { pendingHash = null; calSelected = e.tanggal; const p = e.tanggal.split('-'); calYear = +p[0]; calMonth = +p[1] - 1; showView('kalender'); setTimeout(() => detailEvent(e.id), 120); }
+      else if (eventsSiap) { pendingHash = null; toast('Agenda tidak ditemukan', 'info'); }
+    } else {
+      const j = dataLokal.find(x => kunciBooking(x) === ph.id);
+      if (j) { pendingHash = null; setTimeout(() => showDetailObj(j), 120); }
+      else if (dataSiap) { pendingHash = null; toast('Agenda tidak ditemukan', 'info'); }
+    }
+  }
+  window.addEventListener('hashchange', bacaHash);
+
+  // ---------- Cetak ----------
+  function cetakKalender() {
+    document.getElementById('print-judul').innerText = 'Jadwal Event Order · ' + judulPeriode();
+    document.getElementById('print-tgl').innerText = 'Dicetak ' + tglIndo(ymd(new Date())) + ' ' + pad2(new Date().getHours()) + ':' + pad2(new Date().getMinutes());
+    tutupPop(); window.print();
+  }
+
+  // ---------- Mode gelap ----------
+  function terapkanTema(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    const b = document.getElementById('btn-theme');
+    if (b) { b.title = t === 'dark' ? 'Mode terang' : 'Mode gelap'; b.setAttribute('aria-label', b.title); b.classList.toggle('dark', t === 'dark'); }
+  }
+  function toggleTema() {
+    const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('tema', t); } catch (e) {}
+    terapkanTema(t);
+  }
+  (function () { let t = 'light'; try { t = localStorage.getItem('tema') || 'light'; } catch (e) {} terapkanTema(t); })();
+
+  // ---------- Layar ruangan (kiosk) ----------
+  let kioskOn = false, kioskTimer = null, kioskData = null;
+  function jadwalRuangHariIni(r, ds) {
+    const hari = hariDariYmd(ds), out = [];
+    dataLokal.forEach(j => {
+      if (!String(j.ruangan || '').toUpperCase().includes(r.key)) return;
+      if ((j.tipe === 'RUTIN' && j.hari === hari) || (j.tipe !== 'RUTIN' && j.tanggal === ds)) out.push({ judul: j.keperluan, oleh: j.nama, mulai: j.mulai, selesai: j.selesai, tag: j.tipe === 'RUTIN' ? 'Rutin' : 'Reservasi' });
+    });
+    eventsData.forEach(e => {
+      const rr = roomOf(e.lokasi);
+      if (!rr || rr.key !== r.key || e.tanggal > ds || e.tanggalSelesai < ds) return;
+      const penuh = e.seharian || e.tanggal !== e.tanggalSelesai;
+      out.push({ judul: e.judul, oleh: e.pic, mulai: penuh ? '00:00' : e.mulai, selesai: penuh ? '23:59' : e.selesai, tag: 'Event Order', penuh: penuh });
+    });
+    return out.sort((a, b) => menit(a.mulai) - menit(b.mulai));
+  }
+  function renderKiosk() {
+    if (!kioskOn) return;
+    const n = new Date(), now = n.getHours() * 60 + n.getMinutes(), ds = ymd(n);
+    document.getElementById('ks-time').innerText = pad2(n.getHours()) + ':' + pad2(n.getMinutes());
+    document.getElementById('ks-date').innerText = hariDariYmd(ds) + ', ' + n.getDate() + ' ' + BULAN[n.getMonth()] + ' ' + n.getFullYear();
+    const grid = document.getElementById('ks-grid');
+    if (!dataSiap) { grid.innerHTML = '<div class="ks-load">Memuat jadwal...</div>'; return; }
+    const jamTxt = x => x.penuh ? 'Seharian' : x.mulai + ' - ' + x.selesai;
+    grid.innerHTML = ROOMS.map(r => {
+      const items = jadwalRuangHariIni(r, ds);
+      const cur = items.find(x => menit(x.mulai) <= now && now < menit(x.selesai));
+      const next = items.find(x => menit(x.mulai) > now);
+      const sisa = items.filter(x => menit(x.selesai) > now && x !== cur).slice(0, 4);
+      return '<div class="ks-card" style="--c:' + r.color + '"><div class="ks-name">' + esc(r.name) + '</div>' +
+        '<div class="ks-status ' + (cur ? 'busy' : 'free') + '">' + (cur ? 'TERPAKAI' : 'KOSONG') + '</div>' +
+        (cur ? '<div class="ks-now"><b>' + esc(cur.judul) + '</b><span>' + esc(jamTxt(cur)) + ' &middot; ' + esc(cur.oleh) + '</span></div>'
+             : '<div class="ks-now"><span>' + (next ? 'Tersedia sampai ' + esc(next.mulai) : 'Tersedia sepanjang hari ini') + '</span></div>') +
+        (sisa.length ? '<div class="ks-next"><em>Berikutnya</em>' + sisa.map(x => '<div><b>' + esc(x.penuh ? 'Seharian' : x.mulai) + '</b> ' + esc(x.judul) + '</div>').join('') + '</div>' : '') +
+        '</div>';
+    }).join('');
+  }
+  function bukaKiosk() {
+    kioskOn = true; document.getElementById('kiosk').classList.add('show'); document.body.style.overflow = 'hidden';
+    renderKiosk();
+    clearInterval(kioskTimer);
+    let c = 0;
+    kioskTimer = setInterval(() => {
+      renderKiosk();
+      if (++c % 4 === 0) { muatData(); muatEvents(); }   // segarkan data tiap ~60 detik
+    }, 15000);
+  }
+  function tutupKiosk() {
+    if (!kioskOn) return;
+    kioskOn = false; document.getElementById('kiosk').classList.remove('show'); document.body.style.overflow = '';
+    clearInterval(kioskTimer);
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    if (location.hash === '#kiosk') history.replaceState(null, '', location.pathname + location.search);
+  }
+  function layarPenuh() {
+    const el = document.documentElement;
+    if (document.fullscreenElement) document.exitFullscreen(); else if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+  }
+
 </script>
 <script>
 if ('serviceWorker' in navigator) {
