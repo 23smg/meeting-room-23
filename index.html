@@ -2101,7 +2101,7 @@ window.google = { script: { run: (function () {
     const lamp = (e.lampiran || []).map((l, i) => '<a href="#" class="lamp" onclick="bukaLampiran(\'' + esc(e.id) + '\',' + i + '); return false;">' + esc(l.nama) + '</a>').join('<br>');
     popupDetail(warnaEvent(e), 'Event Order', e.judul, esc(w.rentang) + ' &nbsp;|&nbsp; ' + esc(w.jam),
       [['PIC', esc(e.pic)], ['Departemen', e.departemen ? esc(e.departemen) : ''], ['Lokasi', e.lokasi ? esc(e.lokasi) : ''], ['Lampiran', lamp], ['Keterangan', e.keterangan ? esc(e.keterangan).replace(/\n/g, '<br>') : '']],
-      { kunci: 'e=' + encodeURIComponent(e.id), judul: e.judul, ds: e.tanggal, dsSelesai: e.tanggalSelesai, mulai: e.mulai, selesai: e.selesai, seharian: !!e.seharian,
+      { kunci: kunciUnik(eventsData, e, slugEvent), judul: e.judul, ds: e.tanggal, dsSelesai: e.tanggalSelesai, mulai: e.mulai, selesai: e.selesai, seharian: !!e.seharian,
         lokasi: e.lokasi || '', detail: 'PIC: ' + (e.pic || '-') + (e.keterangan ? '\n' + e.keterangan : ''), waktuTeks: w.rentang + ', ' + w.jam });
   }
 
@@ -2150,11 +2150,18 @@ window.google = { script: { run: (function () {
 
   // ---------- Tambah ke Google Kalender, tautan, WhatsApp ----------
   let dpAksi = null;
+  function slugTxt(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40).replace(/-+$/, '') || 'agenda'; }
+  function sufTgl(ds) { const p = String(ds).split('-'); return p.length === 3 ? parseInt(p[2], 10) + '-' + BULAN_S[parseInt(p[1], 10) - 1].toLowerCase() : ''; }
+  function slugEvent(e) { return 'agenda/' + slugTxt(e.judul) + '-' + sufTgl(e.tanggal); }
+  function slugBooking(j) { return 'jadwal/' + slugTxt(j.keperluan) + '-' + (/^\d{4}-\d{2}-\d{2}$/.test(j.tanggal) ? sufTgl(j.tanggal) : String(j.hari || '').toLowerCase()); }
+  function kunciUnik(arr, item, fn) { const k = fn(item); let n = 0; for (const x of arr) { if (x === item) break; if (fn(x) === k) n++; } return n ? k + '-' + (n + 1) : k; }
+  function cocokEvent(slug) { return eventsData.find(e => kunciUnik(eventsData, e, slugEvent) === slug); }
+  function cocokBooking(slug) { return dataLokal.find(j => kunciUnik(dataLokal, j, slugBooking) === slug); }
   function kunciBooking(j) { return (j.row !== null && j.row !== undefined && j.row !== '') ? String(j.row) : 'R~' + j.ruangan + '~' + j.hari + '~' + j.mulai; }
   function aksiBooking(j) {
     let ds = /^\d{4}-\d{2}-\d{2}$/.test(j.tanggal) ? j.tanggal : null;
     if (!ds) { ds = ymd(new Date()); for (let i = 0; i < 7 && hariDariYmd(ds) !== j.hari; i++) ds = tambahHari(ds, 1); }
-    return { kunci: 'b=' + encodeURIComponent(kunciBooking(j)), judul: j.keperluan, ds: ds, mulai: j.mulai, selesai: j.selesai, seharian: false, rutin: j.tipe === 'RUTIN',
+    return { kunci: kunciUnik(dataLokal, j, slugBooking), judul: j.keperluan, ds: ds, mulai: j.mulai, selesai: j.selesai, seharian: false, rutin: j.tipe === 'RUTIN',
       lokasi: j.ruangan, detail: 'Pemesan: ' + j.nama, waktuTeks: tglIndo(ds) + ', ' + j.mulai + ' - ' + j.selesai };
   }
   function tglJam(ds, jam) { return ds.replace(/-/g, '') + 'T' + String(jam).replace(':', '') + '00'; }
@@ -2196,19 +2203,19 @@ window.google = { script: { run: (function () {
   function bacaHash() {
     const h = decodeURIComponent((location.hash || '').replace(/^#/, ''));
     if (h === 'kiosk') { bukaKiosk(); return; }
-    const m = h.match(/^(e|b)=(.+)$/);
-    pendingHash = m ? { t: m[1], id: m[2] } : null;
+    const m = h.match(/^(agenda|jadwal)\/(.+)$/);
+    pendingHash = m ? { t: m[1] === 'agenda' ? 'e' : 'b', id: h } : null;
     tryHash();
   }
   function tryHash() {
     if (!pendingHash) return;
     const ph = pendingHash;
     if (ph.t === 'e') {
-      const e = eventsData.find(x => String(x.id) === ph.id);
+      const e = cocokEvent(ph.id);
       if (e) { pendingHash = null; calSelected = e.tanggal; const p = e.tanggal.split('-'); calYear = +p[0]; calMonth = +p[1] - 1; showView('kalender'); setTimeout(() => detailEvent(e.id), 120); }
       else if (eventsSiap) { pendingHash = null; toast('Agenda tidak ditemukan', 'info'); }
     } else {
-      const j = dataLokal.find(x => kunciBooking(x) === ph.id);
+      const j = cocokBooking(ph.id);
       if (j) { pendingHash = null; setTimeout(() => showDetailObj(j), 120); }
       else if (dataSiap) { pendingHash = null; toast('Agenda tidak ditemukan', 'info'); }
     }
